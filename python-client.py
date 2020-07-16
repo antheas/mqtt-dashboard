@@ -2,7 +2,10 @@ import paho.mqtt.client as mqtt
 import signal
 import time
 
-f = open("out.txt", "w+")
+OUTPUT = 0
+
+if OUTPUT:
+  f = open("out.txt", "w+")
 led = 0
 
 
@@ -30,7 +33,8 @@ def on_message(client, userdata, msg):
     client.publish("/led", 0)
     print("turning off led...")
 
-  f.write("%.3f;%d\r\n" % (time.time(), hall))
+  if OUTPUT:
+    f.write("%.3f;%d\r\n" % (time.time(), hall))
 
 
 def signal_handler(sig, frame):
@@ -51,4 +55,6 @@ client.connect("localhost", 1883, 60)
 # Other loop*() functions are available that give a threaded interface and a
 # manual interface.
 client.loop_forever()
-f.close()
+
+if OUTPUT:
+  f.close()
