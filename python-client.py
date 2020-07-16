@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 import signal
+import time
 
 f = open("out.txt", "w+")
 led = 0
@@ -29,7 +30,7 @@ def on_message(client, userdata, msg):
     client.publish("/led", 0)
     print("turning off led...")
 
-  f.write("%d\r\n" % (hall))
+  f.write("%.3f;%d\r\n" % (time.time(), hall))
 
 
 def signal_handler(sig, frame):
