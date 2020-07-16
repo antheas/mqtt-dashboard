@@ -33,7 +33,7 @@ def on_message(client, userdata, msg):
 
 
 def signal_handler(sig, frame):
-  print('Exitting...')
+  print('\b\bExiting...')
   client.disconnect()
 
 
