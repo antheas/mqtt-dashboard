@@ -1,0 +1,56 @@
+version: '3.2'
+services:
+  grafana:
+    restart: always
+    image: grafana/grafana
+    ports:
+      - "80:3000"
+    networks:
+      - backend
+    depends_on:
+      - influxdb
+
+  influxdb:
+    restart: always
+    image: influxdb
+    networks:
+      backend:
+        aliases: 
+          - db
+    environment:
+      INFLUXDB_ADMIN_USER: "${DB_ROOT_USER}"
+      INFLUXDB_ADMIN_PASSWORD: "${DB_ROOT_PW}"
+      INFLUXDB_DB: "${DB_NAME}"
+      INFLUXDB_USER: "${DB_USER}"
+      INFLUXDB_USER_PASSWORD: "${DB_PW}"
+      INFLUX_SKIP_DATABASE_CREATION: "true"
+
+  broker:
+    restart: always
+    image: eclipse-mosquitto
+    networks:
+      backend:
+        aliases:
+          - "broker"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+  
+  telegraf:
+    restart: always
+    image: telegraf
+    networks:
+      backend:
+    volumes:
+      - "./telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+    depends_on: 
+      - broker
+      - influxdb
+    environment:
+      INFLUX_URL: db
+      INFLUXDB_DB: "${DB_NAME}"
+      INFLUXDB_USER: "${DB_USER}"
+      INFLUXDB_USER_PASSWORD: "${DB_PW}"
+networks:
+  backend:
+    
