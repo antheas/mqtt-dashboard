@@ -9,6 +9,8 @@ services:
       - backend
     depends_on:
       - influxdb
+    volumes:
+      - "./plugins:/var/lib/grafana/plugins"
 
   influxdb:
     restart: always
