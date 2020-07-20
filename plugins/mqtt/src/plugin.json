@@ -3,6 +3,7 @@
   "name": "mqtt",
   "id": "trp-mqtt",
   "metrics": true,
+  "streaming": true,
   "info": {
     "description": "Local Datasource plugin that connects to an MQTT broker and streams updates",
     "author": {

@@ -11,6 +11,7 @@ services:
       - influxdb
     volumes:
       - "./plugins:/var/lib/grafana/plugins"
+      - "grafana-storage:/var/lib/grafana"
 
   influxdb:
     restart: always
@@ -26,6 +27,8 @@ services:
       INFLUXDB_USER: "${DB_USER}"
       INFLUXDB_USER_PASSWORD: "${DB_PW}"
       INFLUX_SKIP_DATABASE_CREATION: "true"
+    volumes:
+      - influxdb:/var/lib/influxdb
 
   broker:
     restart: always
@@ -55,4 +58,6 @@ services:
       INFLUXDB_USER_PASSWORD: "${DB_PW}"
 networks:
   backend:
-    
+volumes:
+  grafana-storage:
+  influxdb:
