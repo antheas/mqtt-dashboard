@@ -1,5 +1,8 @@
 import defaults from 'lodash/defaults';
 
+import mqtt from 'mqtt';
+import { Observable, merge } from 'rxjs';
+
 import {
   DataQueryRequest,
   DataQueryResponse,
