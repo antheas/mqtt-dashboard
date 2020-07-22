@@ -1,17 +1,16 @@
 version: '3.2'
 services:
-  grafana:
+  chronograf:
     restart: always
-    image: grafana/grafana
-    ports:
-      - "80:3000"
+    image: chronograf
     networks:
-      - backend
-    depends_on:
-      - influxdb
+      backend:
+    ports:
+      - "8888:8888"
+    environment: 
+      influxdb-url: "http://db:8086"
     volumes:
-      - "./plugins:/var/lib/grafana/plugins"
-      - "grafana-storage:/var/lib/grafana"
+      - chronograf:/var/lib/chronograf
 
   influxdb:
     restart: always
@@ -59,5 +58,5 @@ services:
 networks:
   backend:
 volumes:
-  grafana-storage:
   influxdb:
+  cronograf:
