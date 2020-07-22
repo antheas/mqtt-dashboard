@@ -59,4 +59,4 @@ networks:
   backend:
 volumes:
   influxdb:
-  cronograf:
+  chronograf:
