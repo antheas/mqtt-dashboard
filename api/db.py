@@ -87,6 +87,8 @@ class DatabaseManager:
             tag, tag)
     print(query)
     results = self.query_api.query(query)
+    if not results:
+      return '[]'
     table = results[0]
 
     values = []

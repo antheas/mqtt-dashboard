@@ -16,7 +16,7 @@ def query():
 
 @app.route("/discovery")
 def discovery():
-  return db.tag_values("group")
+  return db.tag_values("group", sensor="poop")
 
 
 # print(db.query("-1h", "now()", "", "temperature_sensor").toJSON())
