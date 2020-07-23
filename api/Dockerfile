@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # COPY . .
 
-CMD [ "env FLASK_APP=entry.py", "flask", "run" ]
+CMD ["python", "entry.py" ]
