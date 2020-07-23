@@ -1,5 +1,32 @@
+import json
 import os
+from json import JSONEncoder
+
 from influxdb_client import InfluxDBClient
+
+
+class Series:
+
+  def __init__(self, start, stop, topic, group, client, sensor, unit):
+    self.params = {
+        "start": start,
+        "stop": stop,
+        "topic": topic,
+        "group": group,
+        "client": client,
+        "sensor": sensor,
+        "unit": unit
+    }
+    self.records = []
+
+  def addRecord(self, time, val):
+    self.records.append({"x": str(time), "y": val})
+
+  def toJSON(self):
+    return json.dumps({
+        "params": self.params,
+        "records": self.records
+    }, indent=4)
 
 
 class DatabaseManager:
@@ -39,6 +66,8 @@ class DatabaseManager:
 
     results = self.query_api.query(query)
     table = results[0]
-    print(table)
-    for row in table.records:
-      print(row.values)
+
+    series = Series(start, stop, topic, group, client, sensor, unit)
+    for record in table.records:
+      series.addRecord(record.get_time(), record.get_value())
+    return series

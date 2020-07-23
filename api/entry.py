@@ -1,6 +1,5 @@
 from flask import Flask
 from db import DatabaseManager
-
 app = Flask(__name__)
 db = DatabaseManager()
 
@@ -12,8 +11,8 @@ def hello():
 
 @app.route("/query")
 def query():
-  return db.query("-1h", "now()", "", "temperature_sensor")
+  return db.query("-1h", "now()", "", "temperature_sensor").toJSON()
 
 
-print(db.query("-1h", "now()", "", "temperature_sensor"))
-# app.run(host='0.0.0.0')
+# print(db.query("-1h", "now()", "", "temperature_sensor").toJSON())
+app.run(host='0.0.0.0')
