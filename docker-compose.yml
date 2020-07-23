@@ -26,6 +26,7 @@ services:
       INFLUXDB_USER: "${DB_USER}"
       INFLUXDB_USER_PASSWORD: "${DB_PW}"
       INFLUX_SKIP_DATABASE_CREATION: "true"
+      INFLUXDB_HTTP_FLUX_ENABLED: "true"
     volumes:
       - influxdb:/var/lib/influxdb
 
@@ -55,6 +56,20 @@ services:
       INFLUXDB_DB: "${DB_NAME}"
       INFLUXDB_USER: "${DB_USER}"
       INFLUXDB_USER_PASSWORD: "${DB_PW}"
+
+  api:
+    restart: always
+    build:
+      context: api
+    ports:
+      - "5000:5000"
+    networks:
+      - backend
+    depends_on:
+      - influxdb
+      - broker
+    volumes:
+      - "./api:/usr/src/app"
 networks:
   backend:
 volumes:

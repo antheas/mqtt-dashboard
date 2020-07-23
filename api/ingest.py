@@ -1,6 +1,9 @@
-import paho.mqtt.client as mqtt
+
+import os
 import signal
 import time
+
+import paho.mqtt.client as mqtt
 
 OUTPUT = 0
 
@@ -48,7 +51,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("localhost", 1883, 60)
+client.connect(os.environ.get("BROKER_URL") or "broker", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
