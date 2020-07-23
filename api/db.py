@@ -5,8 +5,7 @@ from json import JSONEncoder
 from influxdb_client import InfluxDBClient
 
 
-class Series:
-
+class QueryResult:
   def __init__(self, start, stop, topic, group, client, sensor, unit):
     self.params = {
         "start": start,
@@ -17,19 +16,32 @@ class Series:
         "sensor": sensor,
         "unit": unit
     }
-    self.records = []
 
-  def addRecord(self, time, val):
-    self.records.append({"x": str(time), "y": val})
+  def toDict(self):
+    return self.__dict__
 
   def toJSON(self):
     return json.dumps(self.toDict())
 
+
+class Series(QueryResult):
+  records = []
+
   def toDict(self):
-    return {
-        "params": self.params,
-        "records": self.records
-    }
+    return {"params": self.params, "records": self.records}
+
+  def addRecord(self, time, val):
+    self.records.append({"x": str(time), "y": val})
+
+
+class Discovery(QueryResult):
+  tags = []
+
+  def toDict(self):
+    return {"params": self.params, "tags": self.tags}
+
+  def addValue(self, values):
+    self.tags.append(values)
 
 
 class DatabaseManager:
@@ -87,11 +99,11 @@ class DatabaseManager:
             tag, tag)
     print(query)
     results = self.query_api.query(query)
-    if not results:
-      return '[]'
-    table = results[0]
+    tags = Discovery(start, stop, topic, group, client, sensor, unit)
 
-    values = []
+    if not results:
+      return tags.toJSON()
+    table = results[0]
     for record in table.records:
-      values.append(record.get_value())
-    return json.dumps(values)
+      tags.addValue(record.get_value())
+    return tags.toJSON()
