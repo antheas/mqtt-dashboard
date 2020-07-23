@@ -23,10 +23,13 @@ class Series:
     self.records.append({"x": str(time), "y": val})
 
   def toJSON(self):
-    return json.dumps({
+    return json.dumps(self.toDict())
+
+  def toDict(self):
+    return {
         "params": self.params,
         "records": self.records
-    }, indent=4)
+    }
 
 
 class DatabaseManager:
@@ -35,7 +38,7 @@ class DatabaseManager:
     self.client = InfluxDBClient.from_env_properties()
     self.query_api = self.client.query_api()
 
-  def query(self, start="-15m", stop="now()", topic="", group="", client="", sensor="", unit=""):
+  def create_base_query(self, start="-15m", stop="now()", topic="", group="", client="", sensor="", unit=""):
     query = 'from(bucket: "%s")' % (os.environ.get("INFLUXDB_BUCKET"))
 
     if start and stop:
@@ -64,10 +67,29 @@ class DatabaseManager:
     if topic:
       query += '|> filter(fn: (r) => r.topic == "%s")' % (topic)
 
-    results = self.query_api.query(query)
+    return query
+
+  def query(self, start="-15m", stop="now()", topic="", group="", client="", sensor="", unit=""):
+    results = self.query_api.query(self.create_base_query(
+        start, stop, topic, group, client, sensor, unit))
     table = results[0]
 
     series = Series(start, stop, topic, group, client, sensor, unit)
     for record in table.records:
       series.addRecord(record.get_time(), record.get_value())
     return series
+
+  def tag_values(self, tag, start="-24h", stop="now()", topic="", group="", client="", sensor="", unit=""):
+    base = self.create_base_query(
+        start, stop, topic, group, client, sensor, unit)
+    query = base + \
+        '|> group(columns:["%s"])|> distinct(column:"%s")|> group()' % (
+            tag, tag)
+    print(query)
+    results = self.query_api.query(query)
+    table = results[0]
+
+    values = []
+    for record in table.records:
+      values.append(record.get_value())
+    return json.dumps(values)
