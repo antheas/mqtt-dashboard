@@ -20,6 +20,7 @@ services:
         aliases: 
           - db
     environment:
+      INFLUXDB_HTTP_AUTH_ENABLED: "true"
       INFLUXDB_ADMIN_USER: "${DB_ROOT_USER}"
       INFLUXDB_ADMIN_PASSWORD: "${DB_ROOT_PW}"
       INFLUXDB_DB: "${DB_NAME}"
@@ -70,6 +71,13 @@ services:
       - broker
     volumes:
       - "./api:/usr/src/app"
+    environment: 
+      INFLUXDB_BUCKET: "${DB_NAME}"
+      INFLUXDB_V2_URL: "http://db:8086"
+      # INFLUXDB_V2_ORG: "${DB_NAME}"
+      INFLUXDB_V2_TOKEN: "${DB_USER}:${DB_PW}"
+      # INFLUXDB_V2_TIMEOUT: 10000
+
 networks:
   backend:
 volumes:

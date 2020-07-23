@@ -7,4 +7,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # COPY . .
 
-CMD ["python", "entry.py" ]
+# CMD ["python", "entry.py"]
+
+CMD watchmedo auto-restart --patterns='*.py' python entry.py
