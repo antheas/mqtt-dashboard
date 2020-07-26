@@ -1,5 +1,11 @@
-from flask import Flask
+from flask import Flask, request
+
 from db import DatabaseManager
+
+TIME_TAGS = ["start", "stop"]
+TAGS = ["topic", "group", "client", "sensor", "unit"]
+
+
 app = Flask(__name__)
 db = DatabaseManager()
 
@@ -9,26 +15,38 @@ def hello():
   return "Hello, World!"
 
 
+def extract_headers(args, tags):
+  res = {}
+  for tag in tags:
+    if tag in args:
+      res[tag] = args[tag]
+
+  return res
+
+
 @app.route("/query")
 def query():
-  return db.query(time={"start": "-1h", "stop": "now()"}, tags={
-      # "topic": "",
-      # "group": "",
-      # "client": "",
-      # "sensor": "temp",
-      # "unit": ""
-  }).toJSON()
+  time = extract_headers(request.args, TIME_TAGS)
+  tags = extract_headers(request.args, TAGS)
+
+  assert(db.check_tags_valid(tags) and db.check_time_valid(time))
+
+  return db.query(time, tags).toJSON()
 
 
 @app.route("/discovery")
 def discovery():
-  return db.discovery(time={"start": "-1h", "stop": "now()"}, tags={
-      # "topic": "",
-      # "group": "",
-      # "client": "",
-      # "sensor": "",
-      # "unit": ""
-  }, search="sensor").toJSON()
+  time = extract_headers(request.args, TIME_TAGS)
+  tags = extract_headers(request.args, TAGS)
+
+  assert (request.args)
+
+  search = request.args["search"]
+
+  assert(db.check_tags_valid(tags) and db.check_time_valid(
+      time) and db.check_val_valid(search))
+
+  return db.discovery(time, tags, search).toJSON()
 
 
 # print(db.query("-1h", "now()", "", "temperature_sensor").toJSON())

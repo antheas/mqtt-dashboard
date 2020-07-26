@@ -1,8 +1,15 @@
 import json
 import os
+import re
 from json import JSONEncoder
 
 from influxdb_client import InfluxDBClient
+
+TIME_TAG_RULE = re.compile("^(?:start|stop)$")
+TIME_RULE = re.compile(
+    "^(?:now\\(\\)|now\\(\\) ?[-+]? ?\\d+[mnuphs]|[-+]? ?\\d+[mhnups])$")
+TAG_RULE = re.compile("^[a-zA-Z][a-zA-Z\\d_]*$")
+VAL_RULE = TAG_RULE
 
 
 class QueryResult:
@@ -50,10 +57,26 @@ class DatabaseManager:
     self.client = InfluxDBClient.from_env_properties()
     self.query_api = self.client.query_api()
 
+  def check_time_valid(self, time):
+    for tag, value in time.items():
+      if not (TIME_TAG_RULE.match(tag) and TIME_RULE.match(value)):
+        return False
+    return True
+
+  def check_tags_valid(self, tags):
+    for tag, value in tags.items():
+      if not (TAG_RULE.match(tag) and VAL_RULE.match(value)):
+        return False
+    return True
+
+  def check_val_valid(self, value):
+    return VAL_RULE.match(value)
+
   def create_base_query(self, time={"start": "-15m", "stop": "now()"}, tags={}):
     query = 'from(bucket: "%s")' % (os.environ.get("INFLUXDB_BUCKET"))
 
     # Bound for time
+    start = stop = ''
     if "start" in time:
       start = time["start"]
     if "stop" in time:
