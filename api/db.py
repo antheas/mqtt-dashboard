@@ -18,9 +18,12 @@ class QueryResult:
 
 
 class Series(QueryResult):
-  records = []
+  def __init__(self, time, tags):
+    self.records = []
+    super().__init__(time, tags)
 
   def toDict(self):
+    print(self.__dict__.keys())
     return self.__dict__
 
   def addRecord(self, time, val):
@@ -28,9 +31,9 @@ class Series(QueryResult):
 
 
 class Discovery(QueryResult):
-  values = []
 
   def __init__(self, time, tags, search):
+    self.values = []
     self.search = search
     super().__init__(time, tags)
 

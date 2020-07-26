@@ -12,22 +12,22 @@ def hello():
 @app.route("/query")
 def query():
   return db.query(time={"start": "-1h", "stop": "now()"}, tags={
-      # "topic": = "",
-      # "group": = "",
-      # "client": = "",
-      # "sensor": = "",
-      # "unit": = ""
+      # "topic": "",
+      # "group": "",
+      # "client": "",
+      # "sensor": "temp",
+      # "unit": ""
   }).toJSON()
 
 
 @app.route("/discovery")
 def discovery():
   return db.discovery(time={"start": "-1h", "stop": "now()"}, tags={
-      # "topic": = "",
-      # "group": = "",
-      # "client": = "",
-      # "sensor": = "",
-      # "unit": = ""
+      # "topic": "",
+      # "group": "",
+      # "client": "",
+      # "sensor": "",
+      # "unit": ""
   }, search="sensor").toJSON()
 
 
