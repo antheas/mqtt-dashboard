@@ -51,8 +51,20 @@ class DatabaseManager:
     self.query_api = self.client.query_api()
 
   def create_base_query(self, start="-15m", stop="now()", topic="", group="", client="", sensor="", unit=""):
+    return self.create_base_query_2(time={"start": start, "stop": stop}, tags={
+        "topic": topic,
+        "group": group,
+        "client": client,
+        "sensor": sensor,
+        "unit": unit
+    })
+
+  def create_base_query_2(self, time={"start": "-15m", "stop": "now()"}, tags={}):
     query = 'from(bucket: "%s")' % (os.environ.get("INFLUXDB_BUCKET"))
 
+    # Bound for time
+    start = time["start"]
+    stop = time["stop"]
     if start and stop:
       query += '|> range(start: %s, stop: %s)' % (start, stop)
     elif start:
@@ -62,31 +74,19 @@ class DatabaseManager:
     else:
       raise ValueError('Unbounded Query')
 
-    query += '|> filter(fn: (r) => r._measurement == "sensors" and (r._field == "value"))'
-
-    if group:
-      query += '|> filter(fn: (r) => r.group == "%s")' % (group)
-
-    if client:
-      query += '|> filter(fn: (r) => r.client == "%s")' % (client)
-
-    if sensor:
-      query += '|> filter(fn: (r) => r.sensor == "%s")' % (sensor)
-
-    if unit:
-      query += '|> filter(fn: (r) => r.unit == "%s")' % (unit)
-
-    if topic:
-      query += '|> filter(fn: (r) => r.topic == "%s")' % (topic)
+    for tag, value in tags.items():
+      query += '|> filter(fn: (r) => r.%s == "%s")' % (tag, value)
 
     return query
 
   def query(self, start="-15m", stop="now()", topic="", group="", client="", sensor="", unit=""):
     results = self.query_api.query(self.create_base_query(
         start, stop, topic, group, client, sensor, unit))
-    table = results[0]
-
     series = Series(start, stop, topic, group, client, sensor, unit)
+
+    if not results:
+      return series
+    table = results[0]
     for record in table.records:
       series.addRecord(record.get_time(), record.get_value())
     return series
