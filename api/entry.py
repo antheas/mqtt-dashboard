@@ -49,5 +49,9 @@ def discovery():
   return db.discovery(time, tags, search).toJSON()
 
 
-# print(db.query("-1h", "now()", "", "temperature_sensor").toJSON())
+@app.errorhandler(Exception)
+def handle_exception(e):
+  return "(400)\nReason: Invalid Query\nMessage:<br/>\n%s" % (str(e)), 400
+
+
 app.run(host='0.0.0.0')

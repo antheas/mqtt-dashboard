@@ -7,7 +7,7 @@ from influxdb_client import InfluxDBClient
 
 TIME_TAG_RULE = re.compile("^(?:start|stop)$")
 TIME_RULE = re.compile(
-    "^(?:now\\(\\)|now\\(\\) ?[-+]? ?\\d+[mnuphs]|[-+]? ?\\d+[mhnups])$")
+    "^(?:now\\(\\)|now\\(\\) ?[-+]? ?\\d+[mnudphs]|[-+]? ?\\d+[mhnudps])$")
 TAG_RULE = re.compile("^[a-zA-Z][a-zA-Z\\d_]*$")
 VAL_RULE = TAG_RULE
 
@@ -86,10 +86,10 @@ class DatabaseManager:
       query += '|> range(start: %s, stop: %s)' % (start, stop)
     elif start:
       query += '|> range(start: %s)' % (start)
-    elif stop:
-      query += '|> range(stop: %s)' % (stop)
+    # elif stop:
+    #   query += '|> range(stop: %s)' % (stop)
     else:
-      raise ValueError('Unbounded Query')
+      raise ValueError('Unbounded Query (missing start)')
 
     for tag, value in tags.items():
       query += '|> filter(fn: (r) => r.%s == "%s")' % (tag, value)
