@@ -5,6 +5,12 @@
   "main": "index.js",
   "private": true,
   "scripts": {
+    "build": "webpack",
+    "release": "cross-env NODE_ENV=production webpack",
+    "watch": "cross-env NODE_ENV=development webpack --watch",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server",
+    "dev80": "sudo npm run dev -- --port 80",
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,7 +26,9 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bourbon": "^7.0.0",
+    "file-loader": "^6.0.0",
     "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
     "redux": "^4.0.5",
     "socket.io-client": "^2.3.0"
@@ -32,6 +40,7 @@
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "@types/react": "^16.9.43",
+    "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/socket.io-client": "^1.4.33",
     "@typescript-eslint/eslint-plugin": "^3.7.1",

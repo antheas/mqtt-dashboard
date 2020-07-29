@@ -10,11 +10,6 @@ app = Flask(__name__)
 db = DatabaseManager()
 
 
-@app.route("/")
-def hello():
-  return "Hello, World!"
-
-
 def extract_headers(args, tags):
   res = {}
   for tag in tags:
