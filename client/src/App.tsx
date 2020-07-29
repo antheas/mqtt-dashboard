@@ -11,7 +11,7 @@ const App: React.FunctionComponent<IProp> = (props) => {
     <div>
       <h1>Hello World!</h1>
       <picture>
-        <img src={require("./img/meme.jpg")} alt="Very good meme" />
+        <img src={require("./img/meme.jpg").default} alt="Very good meme" />
       </picture>
     </div>
   );

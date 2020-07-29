@@ -82,27 +82,14 @@ module.exports = {
       {
         // Image Support
         test: /\.(png|svg|jpg|gif)$/,
-        use: {
-          loader: "file-loader",
-          options: { name: "./img/[name].[contenthash:8].[ext]" },
-        },
+        loader: "file-loader",
+        options: { name: "[name].[contenthash:8].[ext]", path: "./img" },
       },
       {
         // Fonts
         test: /\.(woff|woff2|eot|ttf|otf)$/,
-        use: {
-          loader: "file-loader",
-          options: { name: "./res/[name].[contenthash:8].[ext]" },
-        },
-      },
-      // FIXME: Temporary fix for the react warnings
-      {
-        test: /chessboard.min.js$/,
-        loader: "string-replace-loader",
-        options: {
-          search: "componentWillReceiveProps",
-          replace: "UNSAFE_componentWillReceiveProps",
-        },
+        loader: "file-loader",
+        options: { name: "./res/[name].[contenthash:8].[ext]" },
       },
     ],
   },
