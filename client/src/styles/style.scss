@@ -4,11 +4,9 @@
 @import "forms";
 @import "mixins";
 
-@import "./screens/Builder";
-@import "./screens/Dashboard";
+@import "./partials/body";
+@import "./partials/header";
 
-body {
-  font-family: $font-stack-system;
-  background-color: $color-background;
-  color: $color-text-light;
-}
+@import "./pages/Overview";
+@import "./pages/Builder";
+@import "./pages/Dashboard";

@@ -1,0 +1,42 @@
+.site-nav {
+  align-self: flex-start;
+}
+
+.header {
+  padding-left: 1.2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  list-style-type: none;
+  align-items: center;
+
+  &__item {
+    &__logo {
+      width: 90px;
+      height: 45px;
+      // background: url("../img/header.png") no-repeat left;
+      // background-image: url("../img/header.svg");
+      background-size: contain;
+    }
+
+    a {
+      @extend %base-button;
+      margin-right: 20px;
+
+      border: none;
+      background: transparent;
+      color: $color-accent;
+      font-weight: 500;
+      font-size: 1.1rem;
+
+      &:hover {
+        color: $color-text-light;
+      }
+
+      &:disabled:hover,
+      &:disabled {
+        color: darken($color: $color-accent, $amount: 30);
+      }
+    }
+  }
+}
