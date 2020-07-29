@@ -1,0 +1,112 @@
+@mixin input {
+  border: 0;
+  padding: 0.4rem 0.6rem;
+}
+
+@mixin colored-input {
+  background-color: $color-primary;
+  color: $color-text-light;
+}
+
+@mixin text-input {
+  @include input;
+  @include colored-input;
+  font-size: 0.9rem;
+  padding-left: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    align-self: center;
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__input {
+    @include text-input;
+    margin-top: $top-margin;
+
+    &--first {
+      padding-top: 0.5rem;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+  }
+
+  &__label {
+    @include input;
+    @include colored-input;
+    margin-top: $top-margin;
+    text-align: center;
+    // font-size: 1.1em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__error {
+    @include input;
+    @include colored-input;
+    background-color: darken($color: $color-text-error, $amount: 5);
+    margin-top: $top-margin;
+    text-align: center;
+    // font-size: 1.1em;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__check {
+    @include input;
+    @include colored-input;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+
+    input {
+      margin-right: 0.5rem;
+    }
+  }
+
+  &__dual-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+
+    button,
+    input {
+      flex-grow: 1;
+    }
+
+    button:first-child,
+    input:first-child {
+      margin-right: $top-margin;
+    }
+  }
+
+  &__glue {
+    @include input;
+    @include colored-input;
+    flex: 1;
+  }
+
+  &__button {
+    @include input;
+    @extend %base-button;
+    @include button-primary;
+    margin-top: $top-margin;
+  }
+
+  &__submit {
+    @include input;
+    @extend %base-button;
+    @include button-accent;
+    margin-top: $top-margin + 1px;
+
+    padding-bottom: 0.5rem;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+}

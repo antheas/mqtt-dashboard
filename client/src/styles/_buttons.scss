@@ -1,0 +1,78 @@
+%base-button {
+  display: inline-block;
+  text-decoration: none;
+  border: none;
+  margin: 0;
+
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  transition: background 250ms ease-in-out, transform 150ms ease;
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &:focus {
+    outline-offset: -4px;
+  }
+
+  &:disabled {
+    opacity: 0.3;
+  }
+}
+
+@mixin button-color($color, $outline: false) {
+  background-color: $color;
+  @if lightness($color) < 50 {
+    color: $color-text-light;
+  } @else {
+    color: $color-text-dark;
+  }
+
+  // &:active {
+  //   outline: 1px solid $color-light;
+  // }
+
+  &:hover {
+    background: lighten($color, 10);
+  }
+}
+
+@mixin button-primary {
+  @include button-color($color-primary);
+}
+
+@mixin button-accent {
+  @include button-color($color-accent);
+}
+
+@mixin scrollbars(
+  $size,
+  $foreground-color,
+  $background-color: mix($foreground-color, white, 50%)
+) {
+  // For Google Chrome
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $foreground-color;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $background-color;
+  }
+
+  // For Internet Explorer
+  & {
+    scrollbar-face-color: $foreground-color;
+    scrollbar-track-color: $background-color;
+  }
+}

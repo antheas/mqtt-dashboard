@@ -1,0 +1,140 @@
+.game {
+  display: flex;
+  flex-direction: row;
+
+  &__loader {
+    height: 40px;
+  }
+}
+
+.chat {
+  height: $game-size;
+  width: 270px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  margin-right: $top-margin;
+
+  &__history-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    flex: 1;
+    overflow: hidden;
+
+    margin-top: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    @include input;
+    @include colored-input;
+  }
+
+  &__history {
+    flex-shrink: 0;
+    margin: 0;
+    white-space: pre-line;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  &__form {
+    margin-top: 2px;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+
+    &__input {
+      @include text-input;
+      flex: 1;
+      border-bottom-left-radius: 5px;
+    }
+
+    &__submit {
+      @extend %base-button;
+      @include button-accent;
+      border-bottom-right-radius: 5px;
+    }
+  }
+}
+
+.play-info {
+  min-height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  background-color: $color-primary;
+  border-radius: 5px;
+  overflow: hidden;
+
+  &__title {
+    padding: 0.2rem 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: $color-accent;
+    color: $color-text-dark;
+    @include ellipsis;
+  }
+
+  &__players {
+    display: flex;
+    padding: 0.2rem 0.5rem 0.4rem 0.5rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    &__you {
+      font-weight: bold;
+      @include ellipsis;
+    }
+
+    &__opponent {
+      @include ellipsis;
+    }
+
+    &__vs {
+      align-self: flex-end;
+      height: 2rem;
+      margin: -1rem 0;
+    }
+  }
+}
+
+.game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    font-size: 2rem;
+  }
+
+  &__result {
+    margin-top: 0.3rem;
+    font-size: 4rem;
+
+    &--won {
+      color: $color-accent;
+    }
+
+    &--lost {
+      color: $color-text-error;
+    }
+  }
+
+  &__reason {
+    margin-top: 0.3rem;
+    font-size: 2rem;
+  }
+
+  &__button {
+    @extend %base-button;
+    @include button-accent;
+
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    align-self: stretch;
+    border-radius: 10px;
+  }
+}
