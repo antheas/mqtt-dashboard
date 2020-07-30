@@ -10,6 +10,7 @@ export interface Sensor {
 
 export interface Graph {
   id: string;
+  name: string;
   type: "bump|heatmap|line|gauge";
   colors: string;
 
@@ -45,7 +46,8 @@ export interface RowTriple extends Row {
 
 export interface Dashboard {
   id: string;
-  rows: Row;
+  name: string;
+  rows: Row[];
 
   streaming: boolean;
   span: number;

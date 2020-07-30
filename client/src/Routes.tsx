@@ -14,19 +14,49 @@ const Routes: React.FunctionComponent = () => {
               <Link to="/">Home</Link>
             </li>
             <li className="header__item">
-              <Link to="/dashboard">Dashboard</Link>
+              <Link to="/settings">Settings</Link>
             </li>
-            <li className="header__item">
-              <Link to="/builder">Builder</Link>
-            </li>
+            <Switch>
+              <Route
+                path="/dashboard/:id"
+                component={({
+                  match: {
+                    params: { id },
+                  },
+                }: {
+                  match: { params: { id: string } };
+                }) => (
+                  <li className="header__item">
+                    <Link to={`/builder/${id}`}>Edit</Link>
+                  </li>
+                )}
+              />
+            </Switch>
           </ul>
         </nav>
 
         <div className="content">
           <Switch>
-            <Route path="/dashboard">
-              <Dashboard />
-            </Route>
+            <Route
+              path="/dashboard/:id"
+              component={({
+                match: {
+                  params: { id },
+                },
+              }: {
+                match: { params: { id: string } };
+              }) => <Dashboard id={id} />}
+            />
+            <Route
+              path="/builder/:id"
+              component={({
+                match: {
+                  params: { id },
+                },
+              }: {
+                match: { params: { id: string } };
+              }) => <Builder id={id} />}
+            />
             <Route path="/builder">
               <Builder />
             </Route>

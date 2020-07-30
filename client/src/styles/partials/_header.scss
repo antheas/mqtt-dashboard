@@ -25,12 +25,12 @@
 
       border: none;
       background: transparent;
-      color: $color-accent;
+      color: $color-primary;
       font-weight: 500;
       font-size: 1.1rem;
 
       &:hover {
-        color: $color-text-light;
+        color: $color-primary-light;
       }
 
       &:disabled:hover,

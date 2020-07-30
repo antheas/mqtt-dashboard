@@ -1,14 +1,16 @@
 import React from "react";
 import { render } from "react-dom";
-import "./styles/style.scss";
 import Routes from "./Routes";
+import store from "./store";
+import "./styles/style.scss";
+import { Provider } from "react-redux";
 
-interface IProp {
-  apple: string;
-}
-
-const App: React.FunctionComponent<IProp> = (props) => {
-  return <Routes />;
+const App = () => {
+  return (
+    <Provider store={store}>
+      <Routes />
+    </Provider>
+  );
 };
 
-render(<App apple="green" />, document.getElementById("root"));
+render(<App />, document.getElementById("root"));

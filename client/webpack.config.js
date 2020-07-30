@@ -28,11 +28,12 @@ module.exports = {
     },
   },
   plugins: [
-    // new CleanWebpackPlugin(),
+    new CleanWebpackPlugin(),
     // Setup template
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "./src/index.html",
+      base: "/",
       minify: true,
     }),
     new Dotenv(),

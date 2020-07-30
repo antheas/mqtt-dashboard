@@ -1,15 +1,22 @@
-import { State, Dashboard } from "../types";
+import { Dashboard, State } from "../types";
 
 export function selectDashboards(state: State) {
-  return state.dashboards;
+  return Object.entries(state.dashboards).map(([, value]) => value);
 }
 
-export function selectDashboard(state: State, id: string): Dashboard | null {
-  const dashboards = selectDashboards(state);
+export function selectDashboard(
+  state: State,
+  id: string
+): Dashboard | undefined {
+  const dashboards = state.dashboards;
 
   if (id in dashboards) {
     return dashboards[id];
   } else {
-    return null;
+    return undefined;
   }
+}
+
+export function selectHost(state: State) {
+  return state.host;
 }
