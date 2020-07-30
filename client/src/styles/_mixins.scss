@@ -3,3 +3,24 @@
   white-space: nowrap;
   overflow: hidden;
 }
+
+@mixin color-text($color) {
+  @if lightness($color) < 50 {
+    color: $color-text-light;
+  } @else {
+    color: $color-primary-dark;
+  }
+}
+
+@mixin color-link($color) {
+  @if lightness($color) < 50 {
+    color: $color-text-light;
+  } @else {
+    color: $color-primary-dark;
+
+    &:hover {
+      color: $color-primary-light;
+    }
+    text-decoration: none;
+  }
+}

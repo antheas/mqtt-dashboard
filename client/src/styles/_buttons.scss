@@ -28,11 +28,7 @@
 
 @mixin button-color($color, $outline: false) {
   background-color: $color;
-  @if lightness($color) < 50 {
-    color: $color-text-light;
-  } @else {
-    color: $color-text-dark;
-  }
+  @include color-text($color);
 
   // &:active {
   //   outline: 1px solid $color-light;
