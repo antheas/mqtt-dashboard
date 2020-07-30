@@ -24,6 +24,9 @@
   },
   "homepage": "https://github.com/antheas/mqtt-proof-of-concept#readme",
   "dependencies": {
+    "@mdi/font": "^5.4.55",
+    "@mdi/js": "^5.4.55",
+    "@mdi/react": "^1.4.0",
     "@nivo/bump": "^0.62.0",
     "@nivo/heatmap": "^0.62.0",
     "@nivo/line": "^0.62.0",

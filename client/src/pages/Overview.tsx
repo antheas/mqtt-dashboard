@@ -1,8 +1,10 @@
+import Icon from "@mdi/react";
 import React from "react";
 import { connect } from "react-redux";
-import { selectDashboards, selectHost } from "../store/selectors";
-import { State, Dashboard } from "../store/types";
 import { Link } from "react-router-dom";
+import { selectDashboards, selectHost } from "../store/selectors";
+import { Dashboard, State } from "../store/types";
+import { mdiPencil, mdiDelete, mdiLogoutVariant } from "@mdi/js";
 
 const Overview: React.FunctionComponent<{
   host: string;
@@ -23,6 +25,17 @@ const Overview: React.FunctionComponent<{
             <div className="dashboards__item__name">{d.name}</div>
           </Link>
         ))}
+      </div>
+      <div className="overview__actions">
+        <button className="overview__actions__action">
+          <Icon path={mdiPencil} />
+        </button>
+        <button className="overview__actions__action">
+          <Icon path={mdiDelete} />
+        </button>
+        <button className="overview__actions__action">
+          <Icon path={mdiLogoutVariant} />
+        </button>
       </div>
     </div>
   );
