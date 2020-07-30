@@ -11,11 +11,11 @@ export interface Sensor {
 export interface Graph {
   id: string;
   name: string;
-  type: "bump|heatmap|line|gauge";
-  colors: string;
+  type: "bump" | "heatmap" | "line" | "gauge";
+  colors?: string;
 
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   span: number;
 
   sensors: Sensor[];
@@ -32,7 +32,7 @@ export interface RowSingle extends Row {
 
 export interface RowDouble extends Row {
   type: "double";
-  split: "oox|oxx|ox";
+  split: "oox" | "oxx" | "ox";
   graph1: Graph;
   graph2: Graph;
 }
@@ -42,6 +42,19 @@ export interface RowTriple extends Row {
   graph1: Graph;
   graph2: Graph;
   graph3: Graph;
+}
+
+// Guards
+export function isSingleRow(row: Row): row is RowSingle {
+  return row.type === "single";
+}
+
+export function isDoubleRow(row: Row): row is RowDouble {
+  return row.type === "double";
+}
+
+export function isTripleRow(row: Row): row is RowTriple {
+  return row.type === "triple";
 }
 
 export interface Dashboard {
