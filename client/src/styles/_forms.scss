@@ -49,7 +49,7 @@
   &__error {
     @include input;
     @include colored-input;
-    background-color: darken($color: $color-text-error, $amount: 5);
+    background-color: $color-background-error;
     margin-top: $top-margin;
     text-align: center;
     // font-size: 1.1em;
