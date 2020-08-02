@@ -10,6 +10,7 @@ TIME_RULE = re.compile(
     "^(?:now\\(\\)|now\\(\\) ?[-+]? ?\\d+[mnudphs]|[-+]? ?\\d+[mhnudps])$")
 TAG_RULE = re.compile("^[a-zA-Z][a-zA-Z\\d_]*$")
 VAL_RULE = TAG_RULE
+LIMIT = 5000
 
 
 class QueryResult:
@@ -97,7 +98,8 @@ class DatabaseManager:
     return query
 
   def query(self, time, tags):
-    results = self.query_api.query(self.create_base_query(time, tags))
+    query = self.create_base_query(time, tags) + "|> limit(n: %d)" % (LIMIT)
+    results = self.query_api.query(query)
     series = Series(time, tags)
 
     # Get results
