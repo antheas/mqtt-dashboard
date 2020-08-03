@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Graph } from "../store/types";
-import GraphApiContext, {
+import {
+  Graph,
+  GraphData,
   AbstractGraphApi,
-  Series,
-} from "../store/api/GraphApiProvider";
+  NULL_GRAPH_DATA,
+} from "../store/types";
 import { ResponsiveLine } from "@nivo/line";
 
 const LineGraph = ({ graph, api }: { graph: Graph; api: AbstractGraphApi }) => {
-  const [data, setData] = useState([] as Series[]);
+  const [data, setData] = useState(NULL_GRAPH_DATA);
 
   useEffect(() => {
-    const callback = (data: Series[]) => setData(data);
+    const callback = (data: GraphData) => setData(data);
     api.connect(graph, callback);
     return () => {
       api.disconnect(callback);
@@ -19,7 +20,7 @@ const LineGraph = ({ graph, api }: { graph: Graph; api: AbstractGraphApi }) => {
 
   return (
     <ResponsiveLine
-      data={data}
+      data={data.series}
       margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
       xScale={{ type: "point" }}
       yScale={{
@@ -87,24 +88,4 @@ const LineGraph = ({ graph, api }: { graph: Graph; api: AbstractGraphApi }) => {
   );
 };
 
-const GraphComponent = ({
-  graph: g,
-  className,
-}: {
-  graph: Graph;
-  className: string;
-}) => {
-  if (g) {
-    return (
-      <div className={`graph graph--empty ${className}`}>
-        <GraphApiContext.Consumer>
-          {(api) => <LineGraph graph={g} api={api} />}
-        </GraphApiContext.Consumer>
-      </div>
-    );
-  } else {
-    return <div className={`graph graph--empty ${className}`} />;
-  }
-};
-
-export default GraphComponent;
+export default LineGraph;
