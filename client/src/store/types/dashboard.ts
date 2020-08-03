@@ -1,8 +1,9 @@
 export interface Sensor {
-  group: string;
-  client: string;
-  sensor: string;
-  unit: string;
+  group?: string;
+  client?: string;
+  sensor?: string;
+  unit?: string;
+  topic?: string;
 
   name: string;
   color?: string;

@@ -21,21 +21,21 @@ const RowComponent = ({ row: r }: { row: Row }) => {
     );
   } else if (isDoubleRow(r) && r.split === "oox") {
     return (
-      <div className="row row--triple">
+      <div className="row row--double">
         <CompositeGraph graph={r.graph1} className="graph--two-thirds" />
         <CompositeGraph graph={r.graph2} className="graph--third" />
       </div>
     );
   } else if (isDoubleRow(r) && r.split === "oxx") {
     return (
-      <div className="row row--triple">
+      <div className="row row--double">
         <CompositeGraph graph={r.graph1} className="graph--third" />
         <CompositeGraph graph={r.graph2} className="graph--two-thirds" />
       </div>
     );
   } else if (isDoubleRow(r) && r.split === "ox") {
     return (
-      <div className="row row--triple">
+      <div className="row row--double">
         <CompositeGraph graph={r.graph1} className="graph--half" />
         <CompositeGraph graph={r.graph2} className="graph--half" />
       </div>

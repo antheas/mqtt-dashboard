@@ -15,7 +15,7 @@ export interface Series {
 }
 
 export interface GraphData {
-  timespan: number;
+  timespan?: number;
   to: number;
   series: Series[];
 }

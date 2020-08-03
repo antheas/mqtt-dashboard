@@ -1,0 +1,46 @@
+.dashboard {
+  width: 100%;
+  max-width: 1980px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__header {
+    padding-left: 1.2rem;
+    box-sizing: border-box;
+    max-width: 1048px;
+    width: 100%;
+    font-size: 1.8em;
+  }
+}
+
+.row {
+  width: 100%;
+
+  // &--triple {
+  // }
+
+  // &--double {
+  // }
+
+  // &--single {
+  // }
+}
+
+.graph {
+  &--two-thirds {
+    width: 66%;
+  }
+
+  &--third {
+    width: 33%;
+  }
+
+  &--half {
+    width: 49%;
+  }
+
+  &--full {
+    width: 100%;
+  }
+}
