@@ -1,4 +1,5 @@
 export * from "./dashboard";
+export * from "./graph";
 import { Dashboard } from "./dashboard";
 
 export interface State {
