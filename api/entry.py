@@ -1,12 +1,14 @@
 from flask import Flask, request
 
 from db import DatabaseManager
+from flask_cors import CORS
 
 TIME_TAGS = ["start", "stop"]
 TAGS = ["topic", "group", "client", "sensor", "unit"]
 
 
 app = Flask(__name__)
+CORS(app)
 db = DatabaseManager()
 
 
@@ -29,7 +31,7 @@ def query():
   return db.query(time, tags).toJSON()
 
 
-@app.route("/discovery")
+@ app.route("/discovery")
 def discovery():
   time = extract_headers(request.args, TIME_TAGS)
   tags = extract_headers(request.args, TAGS)
@@ -44,7 +46,7 @@ def discovery():
   return db.discovery(time, tags, search).toJSON()
 
 
-@app.errorhandler(Exception)
+@ app.errorhandler(Exception)
 def handle_exception(e):
   return "(400)\nReason: Invalid Query\nMessage:<br/>\n%s" % (str(e)), 400
 

@@ -2,9 +2,9 @@ import React from "react";
 import { AbstractGraphApi, Graph, GraphData } from "../types";
 import axios from "axios";
 
-class GraphApi extends AbstractGraphApi {
-  private graphs: Map<(data: GraphData) => void, Graph> = new Map();
-  private cachedData: Map<(data: GraphData) => void, GraphData> = new Map();
+export class GraphApi extends AbstractGraphApi {
+  private graphs: Map<(data: GraphData) => void, Graph>;
+  private cachedData: Map<(data: GraphData) => void, GraphData>;
 
   private host: string;
   private streaming: boolean;
@@ -27,20 +27,19 @@ class GraphApi extends AbstractGraphApi {
     this.to = to;
     this.timespan = timespan;
 
-    this.interval = setInterval(this.refresh, autoRefresh);
+    this.graphs = new Map();
+    this.cachedData = new Map();
+
+    this.interval = setInterval(this.refresh.bind(this), autoRefresh);
   }
 
   private refresh() {
     this.graphs.forEach((g, callback) => {
-      const data: GraphData = this.cachedData.get(callback) || {
+      const data: GraphData = {
         to: this.to ? this.to : new Date().getTime(),
         timespan: this.timespan && this.timespan,
         series: [],
       };
-
-      if (!this.to) {
-        data.to = new Date().getTime();
-      }
 
       // Define timespans
       let timeStart = 0;
@@ -58,28 +57,32 @@ class GraphApi extends AbstractGraphApi {
         timeStart = new Date().getTime() - g.span;
         timeStop = new Date().getTime();
       }
+      timeStart = "-5m";
+      timeStop = "now()";
 
       // Make get request for each sensor
-      g.sensors.forEach(async (s) => {
-        const res = await axios.get(`${this.host}/query`, {
-          params: {
-            group: s.group,
-            client: s.client,
-            sensor: s.sensor,
-            unit: s.unit,
-            topic: s.topic,
-            start: timeStart,
-            stop: timeStop,
-          },
-        });
+      g.sensors.forEach((s) => {
+        axios
+          .get(`${this.host}/query`, {
+            params: {
+              group: s.group,
+              client: s.client,
+              sensor: s.sensor,
+              unit: s.unit,
+              topic: s.topic,
+              start: timeStart,
+              stop: timeStop,
+            },
+          })
+          .then((res) => {
+            data.series.push({
+              id: s.name,
+              data: res.data.records,
+            });
 
-        data.series.push({
-          id: s.name,
-          data: JSON.parse(res.data).records,
-        });
-
-        this.cachedData.set(callback, data);
-        callback(data);
+            // this.cachedData.set(callback, data);
+            callback(data);
+          });
       });
     });
   }
@@ -96,7 +99,7 @@ class GraphApi extends AbstractGraphApi {
   }
 }
 
-class StubGraphApi extends AbstractGraphApi {
+export class StubGraphApi extends AbstractGraphApi {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   public connect(): void {}
   // eslint-disable-next-line @typescript-eslint/no-empty-function

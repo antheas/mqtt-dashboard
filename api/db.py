@@ -1,15 +1,17 @@
 import json
 import os
 import re
+from datetime import datetime
 from json import JSONEncoder
 
 from influxdb_client import InfluxDBClient
 
 TIME_TAG_RULE = re.compile("^(?:start|stop)$")
 TIME_RULE = re.compile(
-    "^(?:now\\(\\)|now\\(\\) ?[-+]? ?\\d+[mnudphs]|[-+]? ?\\d+[mhnudps])$")
+    "^(?:now\\(\\)|now\\(\\) ?[-+]? ?\\d+[mnudphs]|[-+]? ?\\d+[mhnudps]?)$")
+TIMESTAMP_RULE = re.compile("^\\d+$")
 TAG_RULE = re.compile("^[a-zA-Z][a-zA-Z\\d_]*$")
-VAL_RULE = TAG_RULE
+VAL_RULE = re.compile("^[\\da-zA-Z_]+$")
 LIMIT = 5000
 
 
@@ -31,7 +33,6 @@ class Series(QueryResult):
     super().__init__(time, tags)
 
   def toDict(self):
-    print(self.__dict__.keys())
     return self.__dict__
 
   def addRecord(self, time, val):
@@ -80,8 +81,14 @@ class DatabaseManager:
     start = stop = ''
     if "start" in time:
       start = time["start"]
+      if TIMESTAMP_RULE.match(start):
+        start = datetime.fromtimestamp(int(start) / 1000).isoformat()
+        print(start)
     if "stop" in time:
       stop = time["stop"]
+      if TIMESTAMP_RULE.match(stop):
+        stop = datetime.fromtimestamp(int(stop) / 1000).isoformat()
+        print(stop)
 
     if start and stop:
       query += '|> range(start: %s, stop: %s)' % (start, stop)

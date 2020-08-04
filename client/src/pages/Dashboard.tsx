@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { selectDashboard } from "../store/selectors";
 import {
@@ -8,9 +8,14 @@ import {
   Row,
   isDoubleRow,
   isTripleRow,
+  AbstractGraphApi,
 } from "../store/types";
 import { useHistory } from "react-router-dom";
 import CompositeGraph from "../components/CompositeGraph";
+import GraphApiContext, {
+  StubGraphApi,
+  GraphApi,
+} from "../store/api/GraphApiProvider";
 
 const RowComponent = ({ row: r }: { row: Row }) => {
   if (isSingleRow(r)) {
@@ -59,6 +64,18 @@ interface IProps {
 
 const Dashboard: React.FunctionComponent<IProps> = ({ dashboard }) => {
   const history = useHistory();
+  const [api, setApi] = useState(new StubGraphApi() as AbstractGraphApi);
+
+  useEffect(() => {
+    if (!dashboard) return;
+
+    const api = new GraphApi("http://sensors.lan:5000", 5000, false);
+    setApi(api);
+
+    return () => {
+      api.destroy();
+    };
+  }, [dashboard]);
 
   if (!dashboard) {
     history.push("/");
@@ -67,12 +84,14 @@ const Dashboard: React.FunctionComponent<IProps> = ({ dashboard }) => {
 
   return (
     <div className="dashboard">
-      {dashboard.name && (
-        <h1 className="dashboard__header">{dashboard.name}</h1>
-      )}
-      {dashboard.rows.map((r, i) => (
-        <RowComponent key={i} row={r} />
-      ))}
+      <GraphApiContext.Provider value={api}>
+        {dashboard.name && (
+          <h1 className="dashboard__header">{dashboard.name}</h1>
+        )}
+        {dashboard.rows.map((r, i) => (
+          <RowComponent key={i} row={r} />
+        ))}
+      </GraphApiContext.Provider>
     </div>
   );
 };

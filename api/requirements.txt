@@ -30,3 +30,4 @@ urllib3==1.25.10
 watchdog==0.10.3
 Werkzeug==1.0.1
 wrapt==1.12.1
+flask-cors==3.0.8
