@@ -77,7 +77,17 @@ export class GraphApi extends AbstractGraphApi {
           .then((res) => {
             data.series.push({
               id: s.name,
-              data: res.data.records,
+              data: res.data.records
+                ? res.data.records.map((r) => ({
+                    x: new Date(r.x),
+                    y: r.y,
+                  }))
+                : [],
+            });
+            data.series.forEach((s) => {
+              s.data.forEach((d) => {
+                if (d === null || d.x === null) console.log(s);
+              });
             });
 
             // this.cachedData.set(callback, data);
