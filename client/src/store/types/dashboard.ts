@@ -1,26 +1,4 @@
-export interface Sensor {
-  group?: string;
-  client?: string;
-  sensor?: string;
-  unit?: string;
-  topic?: string;
-
-  name: string;
-  color?: string;
-}
-
-export interface Graph {
-  id: string;
-  name: string;
-  type: "bump" | "heatmap" | "line" | "gauge";
-  colors?: string;
-
-  min?: number;
-  max?: number;
-  span: number;
-
-  sensors: Sensor[];
-}
+import { Graph } from "./graph";
 
 export interface Row {
   type: string;

@@ -1,5 +1,5 @@
 import { updateHost, updateDashboards } from "./actions";
-import { RowDouble } from "./types";
+import { RowDouble, RowSingle } from "./types";
 
 export default function fillTestData(dispatch: (action: any) => void) {
   dispatch(updateHost("sensors.lan"));
@@ -16,7 +16,7 @@ export default function fillTestData(dispatch: (action: any) => void) {
               id: "5",
               type: "line",
               name: "Grind Wheel",
-              span: 100000,
+              scale: "15m",
               sensors: [
                 {
                   name: "Temp Sensor",
@@ -45,7 +45,7 @@ export default function fillTestData(dispatch: (action: any) => void) {
               id: "5",
               type: "line",
               name: "Grind Wheel",
-              span: 1000000,
+              scale: "1m",
               sensors: [
                 {
                   name: "Temp Sensor",
@@ -71,6 +71,38 @@ export default function fillTestData(dispatch: (action: any) => void) {
               ],
             },
           } as RowDouble,
+          {
+            type: "single",
+            graph: {
+              id: "8",
+              type: "line",
+              name: "Long",
+              scale: "30m",
+              sensors: [
+                {
+                  name: "Temp Sensor",
+                  group: "temperature_sensor",
+                  client: "0",
+                  sensor: "temp",
+                  unit: "temperature",
+                },
+                // {
+                //   name: "Hall Sensor",
+                //   group: "esp_sensor",
+                //   client: "1",
+                //   sensor: "temp",
+                //   unit: "celcius",
+                // },
+                // {
+                //   name: "Hall Sensor",
+                //   group: "esp_sensor",
+                //   client: "1",
+                //   sensor: "hall",
+                //   unit: "magnetic_field",
+                // },
+              ],
+            },
+          } as RowSingle,
         ],
         span: 1000000,
         streaming: true,

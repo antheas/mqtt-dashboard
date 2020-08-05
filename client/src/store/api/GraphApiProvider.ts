@@ -1,5 +1,11 @@
 import React from "react";
-import { AbstractGraphApi, Graph, GraphData } from "../types";
+import {
+  AbstractGraphApi,
+  Graph,
+  GraphData,
+  TimescaleType,
+  timescaleToMs,
+} from "../types";
 import axios from "axios";
 
 export class GraphApi extends AbstractGraphApi {
@@ -8,8 +14,8 @@ export class GraphApi extends AbstractGraphApi {
 
   private host: string;
   private streaming: boolean;
-  private timespan?: number;
-  private to?: number;
+  private to?: Date;
+  private scale?: TimescaleType;
 
   private interval: NodeJS.Timeout;
 
@@ -17,15 +23,15 @@ export class GraphApi extends AbstractGraphApi {
     host: string,
     autoRefresh: number,
     streaming: boolean,
-    to?: number,
-    timespan?: number
+    to?: Date,
+    scale?: TimescaleType
   ) {
     super();
 
     this.host = host;
     this.streaming = streaming;
     this.to = to;
-    this.timespan = timespan;
+    this.scale = scale;
 
     this.graphs = new Map();
     this.cachedData = new Map();
@@ -38,30 +44,16 @@ export class GraphApi extends AbstractGraphApi {
   }
 
   public refreshGraph(g: Graph, callback: (data: GraphData) => void) {
+    // Define timespans
+    const scale = this.scale ? this.scale : g.scale ? g.scale : "15m";
+    const to = this.to ? this.to : new Date();
+    const from = new Date(to.getTime() - timescaleToMs(scale));
+
     const data: GraphData = {
-      to: this.to ? this.to : new Date().getTime(),
-      timespan: this.timespan && this.timespan,
+      to,
+      scale,
       series: [],
     };
-
-    // Define timespans
-    let timeStart = 0;
-    let timeStop = 0;
-    if (this.timespan && this.to) {
-      timeStart = this.to - this.timespan;
-      timeStop = this.to;
-    } else if (this.timespan) {
-      timeStart = new Date().getTime() - this.timespan;
-      timeStop = new Date().getTime();
-    } else if (this.to) {
-      timeStart = this.to - g.span;
-      timeStop = this.to;
-    } else {
-      timeStart = new Date().getTime() - g.span;
-      timeStop = new Date().getTime();
-    }
-    timeStart = "-5m";
-    timeStop = "now()";
 
     // Make get request for each sensor
     g.sensors.forEach((s) => {
@@ -73,8 +65,8 @@ export class GraphApi extends AbstractGraphApi {
             sensor: s.sensor,
             unit: s.unit,
             topic: s.topic,
-            start: timeStart,
-            stop: timeStop,
+            start: Math.floor(from.getTime() / 1000),
+            stop: Math.floor(to.getTime() / 1000),
           },
         })
         .then((res) => {
@@ -86,11 +78,6 @@ export class GraphApi extends AbstractGraphApi {
                   y: r.y,
                 }))
               : [],
-          });
-          data.series.forEach((s) => {
-            s.data.forEach((d) => {
-              if (d === null || d.x === null) console.log(s);
-            });
           });
 
           // this.cachedData.set(callback, data);

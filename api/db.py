@@ -12,7 +12,7 @@ TIME_RULE = re.compile(
 TIMESTAMP_RULE = re.compile("^\\d+$")
 TAG_RULE = re.compile("^[a-zA-Z][a-zA-Z\\d_]*$")
 VAL_RULE = re.compile("^[\\da-zA-Z_]+$")
-LIMIT = 5000
+LIMIT = 25000
 
 
 class QueryResult:
@@ -82,13 +82,11 @@ class DatabaseManager:
     if "start" in time:
       start = time["start"]
       if TIMESTAMP_RULE.match(start):
-        start = datetime.fromtimestamp(int(start) / 1000).isoformat()
-        print(start)
+        start = datetime.fromtimestamp(int(start)).isoformat() + "Z"
     if "stop" in time:
       stop = time["stop"]
       if TIMESTAMP_RULE.match(stop):
-        stop = datetime.fromtimestamp(int(stop) / 1000).isoformat()
-        print(stop)
+        stop = datetime.fromtimestamp(int(stop)).isoformat() + "Z"
 
     if start and stop:
       query += '|> range(start: %s, stop: %s)' % (start, stop)
