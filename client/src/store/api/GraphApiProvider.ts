@@ -34,70 +34,73 @@ export class GraphApi extends AbstractGraphApi {
   }
 
   private refresh() {
-    this.graphs.forEach((g, callback) => {
-      const data: GraphData = {
-        to: this.to ? this.to : new Date().getTime(),
-        timespan: this.timespan && this.timespan,
-        series: [],
-      };
+    this.graphs.forEach((g, c) => this.refreshGraph(g, c));
+  }
 
-      // Define timespans
-      let timeStart = 0;
-      let timeStop = 0;
-      if (this.timespan && this.to) {
-        timeStart = this.to - this.timespan;
-        timeStop = this.to;
-      } else if (this.timespan) {
-        timeStart = new Date().getTime() - this.timespan;
-        timeStop = new Date().getTime();
-      } else if (this.to) {
-        timeStart = this.to - g.span;
-        timeStop = this.to;
-      } else {
-        timeStart = new Date().getTime() - g.span;
-        timeStop = new Date().getTime();
-      }
-      timeStart = "-5m";
-      timeStop = "now()";
+  public refreshGraph(g: Graph, callback: (data: GraphData) => void) {
+    const data: GraphData = {
+      to: this.to ? this.to : new Date().getTime(),
+      timespan: this.timespan && this.timespan,
+      series: [],
+    };
 
-      // Make get request for each sensor
-      g.sensors.forEach((s) => {
-        axios
-          .get(`${this.host}/query`, {
-            params: {
-              group: s.group,
-              client: s.client,
-              sensor: s.sensor,
-              unit: s.unit,
-              topic: s.topic,
-              start: timeStart,
-              stop: timeStop,
-            },
-          })
-          .then((res) => {
-            data.series.push({
-              id: s.name,
-              data: res.data.records
-                ? res.data.records.map((r) => ({
-                    x: new Date(r.x),
-                    y: r.y,
-                  }))
-                : [],
-            });
-            data.series.forEach((s) => {
-              s.data.forEach((d) => {
-                if (d === null || d.x === null) console.log(s);
-              });
-            });
+    // Define timespans
+    let timeStart = 0;
+    let timeStop = 0;
+    if (this.timespan && this.to) {
+      timeStart = this.to - this.timespan;
+      timeStop = this.to;
+    } else if (this.timespan) {
+      timeStart = new Date().getTime() - this.timespan;
+      timeStop = new Date().getTime();
+    } else if (this.to) {
+      timeStart = this.to - g.span;
+      timeStop = this.to;
+    } else {
+      timeStart = new Date().getTime() - g.span;
+      timeStop = new Date().getTime();
+    }
+    timeStart = "-5m";
+    timeStop = "now()";
 
-            // this.cachedData.set(callback, data);
-            callback(data);
+    // Make get request for each sensor
+    g.sensors.forEach((s) => {
+      axios
+        .get(`${this.host}/query`, {
+          params: {
+            group: s.group,
+            client: s.client,
+            sensor: s.sensor,
+            unit: s.unit,
+            topic: s.topic,
+            start: timeStart,
+            stop: timeStop,
+          },
+        })
+        .then((res) => {
+          data.series.push({
+            id: s.name,
+            data: res.data.records
+              ? res.data.records.map((r) => ({
+                  x: new Date(r.x),
+                  y: r.y,
+                }))
+              : [],
           });
-      });
+          data.series.forEach((s) => {
+            s.data.forEach((d) => {
+              if (d === null || d.x === null) console.log(s);
+            });
+          });
+
+          // this.cachedData.set(callback, data);
+          callback(data);
+        });
     });
   }
 
   public connect(graph: Graph, callback: (data: GraphData) => void): void {
+    this.refreshGraph(graph, callback);
     this.graphs.set(callback, graph);
   }
   public disconnect(callback: (data: GraphData) => void): void {
