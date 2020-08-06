@@ -149,7 +149,10 @@ export class GraphApi extends AbstractGraphApi {
       const cache = this.cachedData.get(bind.callback);
       if (!cache) return;
 
-      cache.series[bind.i].data.push({ x: socketData.x, y: socketData.y });
+      cache.series[bind.i].data.push({
+        x: new Date(Math.floor(parseInt(socketData.x) * 1000)),
+        y: socketData.y,
+      });
 
       const scale = this.scale
         ? this.scale

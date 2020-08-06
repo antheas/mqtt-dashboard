@@ -71,16 +71,19 @@ def on_connect(client, userdata, flags, rc):
 @mqtt.on_message()
 def on_message(client, userdata, msg):
   topic = msg.topic
-  sensorInfo = topic.split("/")
-  group = sensorInfo[1]
-  client = sensorInfo[2]
-  sensor = sensorInfo[3]
-  unit = sensorInfo[4]
+  # sensorInfo = topic.split("/")
+  # group = sensorInfo[1]
+  # client = sensorInfo[2]
+  # sensor = sensorInfo[3]
+  # sensorUnit = sensorInfo[4]
 
-  data = {"topic": topic, "group": group, "client": client,
-          "sensor": sensor, "unit": unit, "x": datetime.timestamp(datetime.now()),
-          "y": str(int(msg.payload))}
-  socketio.emit("sensor", data, broadcast=True)
+  # data = {"topic": topic, "group": group, "client": client,
+  #         "sensor": sensor, "unit": sensorUnit, "x": datetime.timestamp(datetime.now()),
+  #         "y": msg.payload.decode('utf-8')}
+  data = {"topic": topic, "x": datetime.timestamp(datetime.now()),
+          "y": msg.payload.decode('utf-8')}
+  socketio.emit("sensor", data, room=topic)
+  print(str(data), flush=True)
 
 
 @socketio.on('subscribe_sensor')
@@ -103,10 +106,10 @@ def unsubscribe_to_mqtt(data):
 
 def signal_handler(sig, frame):
   socketio.stop()
-  print('\b\bExiting...')
+  print('\b\bExiting...', flush=True)
 
 
 if __name__ == '__main__':
-  print("Starting...")
+  print("Starting...", flush=True)
   # signal.signal(signal.SIGINT, signal_handler)
   socketio.run(app, host='0.0.0.0')
