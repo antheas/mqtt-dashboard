@@ -54,8 +54,14 @@ export class GraphApi extends AbstractGraphApi {
       from,
       to,
       scale,
-      series: cache ? cache : [],
+      series: cache
+        ? cache
+        : g.sensors.map((p) => ({
+            id: p.name,
+            data: [],
+          })),
     };
+    this.cachedData.set(callback, data);
 
     // Make get request for each sensor
     g.sensors.forEach((s, i) => {
@@ -82,8 +88,7 @@ export class GraphApi extends AbstractGraphApi {
               : [],
           };
 
-          this.cachedData.set(callback, data);
-          callback(data);
+          callback({ ...data });
         });
     });
   }

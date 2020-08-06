@@ -38,6 +38,14 @@
   height: 100%;
   margin-right: 3vh;
 
+  &__header {
+    text-align: center;
+    font-size: medium;
+    font-weight: 300;
+    font-style: italic;
+    margin-bottom: -10px;
+  }
+
   &--two-thirds {
     width: 66%;
   }

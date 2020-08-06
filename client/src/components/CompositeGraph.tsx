@@ -28,6 +28,7 @@ const CompositeGraph = ({
   if (g) {
     return (
       <div className={`graph graph--empty ${className}`}>
+        <div className="graph__header">{g.name} </div>
         <GraphApiContext.Consumer>
           {(api) => <LineGraph graph={g} api={api} width={width} />}
         </GraphApiContext.Consumer>

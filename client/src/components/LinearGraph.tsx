@@ -83,7 +83,7 @@ const styleGraph = (graph: Graph, width: GraphWidth, data: GraphData) => {
     ...BASE_STYLES,
     margin: {
       ...BASE_STYLES.margin,
-      right: data.series.length > 1 ? 110 : 15,
+      right: data.series.length > 1 ? 115 : 15,
     },
     axisLeft: {
       legend: graph.unit,

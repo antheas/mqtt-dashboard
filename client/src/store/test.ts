@@ -15,9 +15,9 @@ export default function fillTestData(dispatch: (action: any) => void) {
             graph1: {
               id: "5",
               type: "line",
-              name: "Grind Wheel",
+              name: "Temp Sensor (15m)",
               scale: "15m",
-              unit: "C",
+              unit: "Celcius",
               sensors: [
                 {
                   name: "Temp Sensor",
@@ -45,9 +45,9 @@ export default function fillTestData(dispatch: (action: any) => void) {
             graph2: {
               id: "5",
               type: "line",
-              name: "Grind Wheel",
+              name: "Temp Sensor Stream",
               scale: "1m",
-              unit: "C",
+              unit: "Celcius",
               // min: 20,
               // max: 80,
               sensors: [
@@ -81,9 +81,9 @@ export default function fillTestData(dispatch: (action: any) => void) {
             graph2: {
               id: "5",
               type: "line",
-              name: "Grind Wheel",
-              scale: "15m",
-              unit: "C",
+              name: "Hall Sensor (5m)",
+              scale: "5m",
+              unit: "Tesla",
               sensors: [
                 {
                   name: "ESP Hall",
@@ -97,9 +97,9 @@ export default function fillTestData(dispatch: (action: any) => void) {
             graph1: {
               id: "5",
               type: "line",
-              name: "Grind Wheel",
+              name: "Hall Sensor Stream",
               scale: "1m",
-              unit: "C",
+              unit: "Tesla",
               // min: 20,
               // max: 80,
               sensors: [
@@ -118,31 +118,26 @@ export default function fillTestData(dispatch: (action: any) => void) {
             graph: {
               id: "8",
               type: "line",
-              name: "Long",
+              name: "Both Temp Sensors (30m)",
               scale: "30m",
+              min: 30,
+              max: 60,
               unit: "C",
               sensors: [
                 {
-                  name: "Temp Sensor",
+                  name: "ESP8266 Temp",
                   group: "temperature_sensor",
                   client: "0",
                   sensor: "temp",
                   unit: "temperature",
                 },
-                // {
-                //   name: "ESP",
-                //   group: "esp_sensor",
-                //   client: "1",
-                //   sensor: "temp",
-                //   unit: "celcius",
-                // },
-                // {
-                //   name: "Hall Sensor",
-                //   group: "esp_sensor",
-                //   client: "1",
-                //   sensor: "hall",
-                //   unit: "magnetic_field",
-                // },
+                {
+                  name: "ESP32 Temp",
+                  group: "esp_sensor",
+                  client: "1",
+                  sensor: "temp",
+                  unit: "celcius",
+                },
               ],
             },
           } as RowSingle,
