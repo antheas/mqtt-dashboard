@@ -1,6 +1,8 @@
 import { Graph } from "./dashboard";
 
-export type TimescaleType =
+export type TimescaleType = string;
+
+export type GraphScale =
   | "1m"
   | "5m"
   | "15m"
@@ -9,10 +11,12 @@ export type TimescaleType =
   | "6h"
   | "1d"
   | "1w"
-  | "1mo"
-  | "6mo"
+  | "1o"
+  | "6o"
   | "1y"
   | "all";
+
+export type GraphWidth = "third" | "half" | "two-thirds" | "full";
 
 export function timescaleToMs(scale: TimescaleType): number {
   switch (scale) {
@@ -32,9 +36,9 @@ export function timescaleToMs(scale: TimescaleType): number {
       return 24 * 3600 * 1000;
     case "1w":
       return 7 * 24 * 3600 * 1000;
-    case "1mo":
+    case "1o":
       return 30 * 24 * 3600 * 1000;
-    case "6mo":
+    case "6o":
       return 180 * 24 * 3600 * 1000;
     case "1y":
       return 365 * 24 * 3600 * 1000;
@@ -43,6 +47,10 @@ export function timescaleToMs(scale: TimescaleType): number {
     default:
       return 5 * 365 * 24 * 3600 * 1000;
   }
+}
+
+export function getGraphScale(scale: TimescaleType): GraphScale {
+  return scale as GraphScale;
 }
 
 export type DatumValue = string | number | Date;
@@ -99,6 +107,7 @@ export interface Graph {
   min?: number;
   max?: number;
   scale: TimescaleType;
+  unit: string;
 
   sensors: Sensor[];
 }

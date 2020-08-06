@@ -5,12 +5,15 @@ import {
   AbstractGraphApi,
   NULL_GRAPH_DATA,
   TimescaleType,
+  getGraphScale,
+  GraphWidth,
 } from "../store/types";
 import { ResponsiveLine, DatumValue, LineSvgProps } from "@nivo/line";
 
 // https://github.com/plouc/nivo/blob/master/packages/line/stories/line.stories.js
 
 const BASE_STYLES: Partial<LineSvgProps> = {
+  margin: { top: 0, right: 0, bottom: 50, left: 60 },
   xScale: {
     type: "time",
     precision: "second",
@@ -24,14 +27,11 @@ const BASE_STYLES: Partial<LineSvgProps> = {
     stacked: true,
     reverse: false,
   },
-  colors: { scheme: "blues" },
-  axisLeft: {
-    legend: "linear scale",
-    legendOffset: 12,
-  },
+  colors: { scheme: "red_yellow_blue" },
   axisBottom: {
-    format: "%s",
-    tickValues: "every 2 minutes",
+    format: (t: DatumValue) =>
+      t instanceof Date ? t.getMinutes() + ":" + t.getSeconds() : "aa",
+    tickValues: 6,
     legend: "t(s)",
     legendOffset: -12,
   },
@@ -48,14 +48,49 @@ const BASE_STYLES: Partial<LineSvgProps> = {
   enablePoints: false,
 };
 
-const styleGraph = (scale: TimescaleType) => {
-  switch (scale) {
+const calculateTicks = (width: GraphWidth) => {
+  switch (width) {
+    case "full":
+      return 15;
+    case "half":
+      return 10;
+    case "third":
+      return 5;
+    case "two-thirds":
+      return 8;
     default:
-      return BASE_STYLES;
+      return 10;
   }
 };
 
-const LineGraph = ({ graph, api }: { graph: Graph; api: AbstractGraphApi }) => {
+const styleGraph = (graph: Graph, width: GraphWidth) => {
+  const styles = {
+    ...BASE_STYLES,
+    axisLeft: {
+      legend: graph.unit,
+      legendOffset: 12,
+    },
+    axisBottom: {
+      ...BASE_STYLES.axisBottom,
+      tickValues: calculateTicks(width),
+    },
+  };
+  switch (getGraphScale(graph.scale)) {
+    case "1m":
+    default:
+      return styles;
+  }
+};
+
+const LineGraph = ({
+  graph,
+  width,
+  api,
+}: {
+  graph: Graph;
+  width: GraphWidth;
+  api: AbstractGraphApi;
+}) => {
   const [data, setData] = useState(NULL_GRAPH_DATA);
 
   useEffect(() => {
@@ -66,7 +101,7 @@ const LineGraph = ({ graph, api }: { graph: Graph; api: AbstractGraphApi }) => {
     };
   }, [graph, api]);
 
-  return <ResponsiveLine data={data.series} {...BASE_STYLES} />;
+  return <ResponsiveLine data={data.series} {...styleGraph(graph, width)} />;
 };
 
 export default LineGraph;

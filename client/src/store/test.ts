@@ -17,6 +17,7 @@ export default function fillTestData(dispatch: (action: any) => void) {
               type: "line",
               name: "Grind Wheel",
               scale: "15m",
+              unit: "C",
               sensors: [
                 {
                   name: "Temp Sensor",
@@ -46,6 +47,7 @@ export default function fillTestData(dispatch: (action: any) => void) {
               type: "line",
               name: "Grind Wheel",
               scale: "1m",
+              unit: "C",
               sensors: [
                 {
                   name: "Temp Sensor",
@@ -78,6 +80,7 @@ export default function fillTestData(dispatch: (action: any) => void) {
               type: "line",
               name: "Long",
               scale: "30m",
+              unit: "C",
               sensors: [
                 {
                   name: "Temp Sensor",

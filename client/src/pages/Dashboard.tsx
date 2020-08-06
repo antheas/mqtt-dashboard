@@ -21,36 +21,36 @@ const RowComponent = ({ row: r }: { row: Row }) => {
   if (isSingleRow(r)) {
     return (
       <div className="row row--single">
-        <CompositeGraph graph={r.graph} className="graph--full" />
+        <CompositeGraph graph={r.graph} width="full" />
       </div>
     );
   } else if (isDoubleRow(r) && r.split === "oox") {
     return (
       <div className="row row--double">
-        <CompositeGraph graph={r.graph1} className="graph--two-thirds" />
-        <CompositeGraph graph={r.graph2} className="graph--third" />
+        <CompositeGraph graph={r.graph1} width="two-thirds" />
+        <CompositeGraph graph={r.graph2} width="third" />
       </div>
     );
   } else if (isDoubleRow(r) && r.split === "oxx") {
     return (
       <div className="row row--double">
-        <CompositeGraph graph={r.graph1} className="graph--third" />
-        <CompositeGraph graph={r.graph2} className="graph--two-thirds" />
+        <CompositeGraph graph={r.graph1} width="third" />
+        <CompositeGraph graph={r.graph2} width="two-thirds" />
       </div>
     );
   } else if (isDoubleRow(r) && r.split === "ox") {
     return (
       <div className="row row--double">
-        <CompositeGraph graph={r.graph1} className="graph--half" />
-        <CompositeGraph graph={r.graph2} className="graph--half" />
+        <CompositeGraph graph={r.graph1} width="half" />
+        <CompositeGraph graph={r.graph2} width="half" />
       </div>
     );
   } else if (isTripleRow(r)) {
     return (
       <div className="row row--triple">
-        <CompositeGraph graph={r.graph1} className="graph--third" />
-        <CompositeGraph graph={r.graph2} className="graph--third" />
-        <CompositeGraph graph={r.graph3} className="graph--third" />
+        <CompositeGraph graph={r.graph1} width="third" />
+        <CompositeGraph graph={r.graph2} width="third" />
+        <CompositeGraph graph={r.graph3} width="third" />
       </div>
     );
   }
