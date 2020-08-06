@@ -1,25 +1,21 @@
-import React, { useState, useEffect } from "react";
+import { DatumValue, LineSvgProps, ResponsiveLine } from "@nivo/line";
+import { DataFormatter } from "@nivo/core";
+import React, { useEffect, useState } from "react";
 import {
+  AbstractGraphApi,
+  getGraphScale,
   Graph,
   GraphData,
-  AbstractGraphApi,
-  NULL_GRAPH_DATA,
-  TimescaleType,
-  getGraphScale,
   GraphWidth,
+  NULL_GRAPH_DATA,
 } from "../store/types";
-import { ResponsiveLine, DatumValue, LineSvgProps } from "@nivo/line";
 
 // https://github.com/plouc/nivo/blob/master/packages/line/stories/line.stories.js
 
 const BASE_STYLES: Partial<LineSvgProps> = {
   margin: { top: 25, right: 25, bottom: 50, left: 60 },
-  xFormat: (t: DatumValue) =>
-    t instanceof Date ? t.getMinutes() + ":" + t.getSeconds() : "",
   colors: { scheme: "red_yellow_blue" },
   axisBottom: {
-    format: (t: DatumValue) =>
-      t instanceof Date ? t.getMinutes() + ":" + t.getSeconds() : "aa",
     tickValues: 6,
     legend: "t(s)",
     legendOffset: -12,
@@ -78,9 +74,15 @@ const calculateTicks = (width: GraphWidth) => {
   }
 };
 
+const getXFormatter = ({ scale }: Graph): DataFormatter => {
+  return (t: DatumValue) =>
+    t instanceof Date ? t.getMinutes() + ":" + t.getSeconds() : "";
+};
+
 const styleGraph = (graph: Graph, width: GraphWidth, data: GraphData) => {
   const styles: Partial<LineSvgProps> = {
     ...BASE_STYLES,
+    xFormat: getXFormatter(graph),
     margin: {
       ...BASE_STYLES.margin,
       right: data.series.length > 1 ? 115 : 15,
@@ -91,6 +93,7 @@ const styleGraph = (graph: Graph, width: GraphWidth, data: GraphData) => {
     },
     axisBottom: {
       ...BASE_STYLES.axisBottom,
+      format: getXFormatter(graph),
       tickValues: calculateTicks(width),
     },
     yScale: {
