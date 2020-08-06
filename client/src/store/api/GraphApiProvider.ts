@@ -17,7 +17,7 @@ export class GraphApi extends AbstractGraphApi {
   private to?: Date;
   private scale?: TimescaleType;
 
-  private interval: NodeJS.Timeout;
+  private interval: NodeJS.Timeout | undefined;
 
   constructor(
     host: string,
@@ -36,7 +36,8 @@ export class GraphApi extends AbstractGraphApi {
     this.graphs = new Map();
     this.cachedData = new Map();
 
-    this.interval = setInterval(this.refresh.bind(this), autoRefresh);
+    if (!streaming)
+      this.interval = setInterval(this.refresh.bind(this), autoRefresh);
   }
 
   private refresh() {
@@ -102,7 +103,7 @@ export class GraphApi extends AbstractGraphApi {
   }
 
   public destroy() {
-    clearInterval(this.interval);
+    if (this.interval) clearInterval(this.interval);
   }
 }
 
