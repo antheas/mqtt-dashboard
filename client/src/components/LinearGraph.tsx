@@ -13,7 +13,7 @@ import { ResponsiveLine, DatumValue, LineSvgProps } from "@nivo/line";
 // https://github.com/plouc/nivo/blob/master/packages/line/stories/line.stories.js
 
 const BASE_STYLES: Partial<LineSvgProps> = {
-  margin: { top: 0, right: 0, bottom: 50, left: 60 },
+  margin: { top: 25, right: 25, bottom: 50, left: 60 },
   xFormat: (t: DatumValue) =>
     t instanceof Date ? t.getMinutes() + ":" + t.getSeconds() : "",
   colors: { scheme: "red_yellow_blue" },
@@ -35,6 +35,32 @@ const BASE_STYLES: Partial<LineSvgProps> = {
   useMesh: true,
   enableSlices: false,
   enablePoints: false,
+  legends: [
+    {
+      anchor: "bottom-right",
+      direction: "column",
+      justify: false,
+      translateX: 100,
+      translateY: 0,
+      itemsSpacing: 0,
+      itemDirection: "left-to-right",
+      itemWidth: 80,
+      itemHeight: 20,
+      itemOpacity: 0.75,
+      symbolSize: 12,
+      symbolShape: "circle",
+      symbolBorderColor: "rgba(0, 0, 0, .5)",
+      effects: [
+        {
+          on: "hover",
+          style: {
+            itemBackground: "rgba(0, 0, 0, .03)",
+            itemOpacity: 1,
+          },
+        },
+      ],
+    },
+  ],
 };
 
 const calculateTicks = (width: GraphWidth) => {
@@ -55,6 +81,10 @@ const calculateTicks = (width: GraphWidth) => {
 const styleGraph = (graph: Graph, width: GraphWidth, data: GraphData) => {
   const styles: Partial<LineSvgProps> = {
     ...BASE_STYLES,
+    margin: {
+      ...BASE_STYLES.margin,
+      right: data.series.length > 1 ? 110 : 15,
+    },
     axisLeft: {
       legend: graph.unit,
       legendOffset: 12,
@@ -67,7 +97,7 @@ const styleGraph = (graph: Graph, width: GraphWidth, data: GraphData) => {
       type: "linear",
       min: graph.min ? graph.min : "auto",
       max: graph.max ? graph.max : "auto",
-      stacked: true,
+      stacked: false,
       reverse: false,
     },
     xScale: {

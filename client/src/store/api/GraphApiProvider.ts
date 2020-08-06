@@ -49,15 +49,16 @@ export class GraphApi extends AbstractGraphApi {
     const to = this.to ? this.to : new Date();
     const from = new Date(to.getTime() - timescaleToMs(scale));
 
+    const cache = this.cachedData.get(callback)?.series;
     const data: GraphData = {
       from,
       to,
       scale,
-      series: [],
+      series: cache ? cache : [],
     };
 
     // Make get request for each sensor
-    g.sensors.forEach((s) => {
+    g.sensors.forEach((s, i) => {
       axios
         .get(`${this.host}/query`, {
           params: {
@@ -71,7 +72,7 @@ export class GraphApi extends AbstractGraphApi {
           },
         })
         .then((res) => {
-          data.series.push({
+          data.series[i] = {
             id: s.name,
             data: res.data.records
               ? res.data.records.map((r) => ({
@@ -79,9 +80,9 @@ export class GraphApi extends AbstractGraphApi {
                   y: r.y,
                 }))
               : [],
-          });
+          };
 
-          // this.cachedData.set(callback, data);
+          this.cachedData.set(callback, data);
           callback(data);
         });
     });

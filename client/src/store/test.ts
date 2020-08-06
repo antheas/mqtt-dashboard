@@ -48,6 +48,8 @@ export default function fillTestData(dispatch: (action: any) => void) {
               name: "Grind Wheel",
               scale: "1m",
               unit: "C",
+              // min: 20,
+              // max: 80,
               sensors: [
                 {
                   name: "Temp Sensor",
@@ -57,7 +59,7 @@ export default function fillTestData(dispatch: (action: any) => void) {
                   unit: "temperature",
                 },
                 // {
-                //   name: "Hall Sensor",
+                //   name: "ESP",
                 //   group: "esp_sensor",
                 //   client: "1",
                 //   sensor: "temp",
@@ -70,6 +72,44 @@ export default function fillTestData(dispatch: (action: any) => void) {
                 //   sensor: "hall",
                 //   unit: "magnetic_field",
                 // },
+              ],
+            },
+          } as RowDouble,
+          {
+            type: "double",
+            split: "oxx",
+            graph2: {
+              id: "5",
+              type: "line",
+              name: "Grind Wheel",
+              scale: "15m",
+              unit: "C",
+              sensors: [
+                {
+                  name: "ESP Hall",
+                  group: "esp_sensor",
+                  client: "1",
+                  sensor: "hall",
+                  unit: "magnetic_field",
+                },
+              ],
+            },
+            graph1: {
+              id: "5",
+              type: "line",
+              name: "Grind Wheel",
+              scale: "1m",
+              unit: "C",
+              // min: 20,
+              // max: 80,
+              sensors: [
+                {
+                  name: "ESP Hall",
+                  group: "esp_sensor",
+                  client: "1",
+                  sensor: "hall",
+                  unit: "magnetic_field",
+                },
               ],
             },
           } as RowDouble,
@@ -90,7 +130,7 @@ export default function fillTestData(dispatch: (action: any) => void) {
                   unit: "temperature",
                 },
                 // {
-                //   name: "Hall Sensor",
+                //   name: "ESP",
                 //   group: "esp_sensor",
                 //   client: "1",
                 //   sensor: "temp",
