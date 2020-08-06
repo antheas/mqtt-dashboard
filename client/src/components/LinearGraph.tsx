@@ -14,19 +14,8 @@ import { ResponsiveLine, DatumValue, LineSvgProps } from "@nivo/line";
 
 const BASE_STYLES: Partial<LineSvgProps> = {
   margin: { top: 0, right: 0, bottom: 50, left: 60 },
-  xScale: {
-    type: "time",
-    precision: "second",
-  },
   xFormat: (t: DatumValue) =>
     t instanceof Date ? t.getMinutes() + ":" + t.getSeconds() : "",
-  yScale: {
-    type: "linear",
-    min: "auto",
-    max: "auto",
-    stacked: true,
-    reverse: false,
-  },
   colors: { scheme: "red_yellow_blue" },
   axisBottom: {
     format: (t: DatumValue) =>
@@ -63,8 +52,8 @@ const calculateTicks = (width: GraphWidth) => {
   }
 };
 
-const styleGraph = (graph: Graph, width: GraphWidth) => {
-  const styles = {
+const styleGraph = (graph: Graph, width: GraphWidth, data: GraphData) => {
+  const styles: Partial<LineSvgProps> = {
     ...BASE_STYLES,
     axisLeft: {
       legend: graph.unit,
@@ -73,6 +62,19 @@ const styleGraph = (graph: Graph, width: GraphWidth) => {
     axisBottom: {
       ...BASE_STYLES.axisBottom,
       tickValues: calculateTicks(width),
+    },
+    yScale: {
+      type: "linear",
+      min: graph.min ? graph.min : "auto",
+      max: graph.max ? graph.max : "auto",
+      stacked: true,
+      reverse: false,
+    },
+    xScale: {
+      type: "time",
+      precision: "second",
+      ...(data.from && { min: data.from }),
+      ...(data.to && { max: data.to }),
     },
   };
   switch (getGraphScale(graph.scale)) {
@@ -101,7 +103,9 @@ const LineGraph = ({
     };
   }, [graph, api]);
 
-  return <ResponsiveLine data={data.series} {...styleGraph(graph, width)} />;
+  return (
+    <ResponsiveLine data={data.series} {...styleGraph(graph, width, data)} />
+  );
 };
 
 export default LineGraph;

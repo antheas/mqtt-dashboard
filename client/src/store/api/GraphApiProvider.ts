@@ -50,6 +50,7 @@ export class GraphApi extends AbstractGraphApi {
     const from = new Date(to.getTime() - timescaleToMs(scale));
 
     const data: GraphData = {
+      from,
       to,
       scale,
       series: [],

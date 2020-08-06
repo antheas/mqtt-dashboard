@@ -1,5 +1,3 @@
-import { Graph } from "./dashboard";
-
 export type TimescaleType = string;
 
 export type GraphScale =
@@ -70,12 +68,14 @@ export interface Series {
 export interface GraphData {
   scale?: TimescaleType;
   to: Date | null;
+  from: Date | null;
   series: Series[];
 }
 
 export const NULL_GRAPH_DATA: GraphData = {
   scale: "15m",
   to: null,
+  from: null,
   series: [],
 };
 
