@@ -8,7 +8,6 @@ from db import DatabaseManager
 from flask_cors import CORS
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO, emit, join_room, leave_room
-from stream import StreamManager
 
 TIME_TAGS = ["start", "stop"]
 TAGS = ["topic", "group", "client", "sensor", "unit"]
@@ -20,7 +19,7 @@ app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_TLS_ENABLED'] = False
 CORS(app)
 db = DatabaseManager()
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 mqtt = Mqtt(app)
 
 
@@ -71,18 +70,35 @@ def on_connect(client, userdata, flags, rc):
 
 @mqtt.on_message()
 def on_message(client, userdata, msg):
-  sensor = msg.topic
-  emit("sensor",
-       {"x": datetime.timestamp(datetime.now()), "y": str(int(msg.payload))}, room=sensor)
+  topic = msg.topic
+  sensorInfo = topic.split("/")
+  group = sensorInfo[1]
+  client = sensorInfo[2]
+  sensor = sensorInfo[3]
+  unit = sensorInfo[4]
+
+  data = {"topic": topic, "group": group, "client": client,
+          "sensor": sensor, "unit": unit, "x": datetime.timestamp(datetime.now()),
+          "y": str(int(msg.payload))}
+  socketio.emit("sensor", data, broadcast=True)
 
 
 @socketio.on('subscribe_sensor')
 def subscribe_to_mqtt(data):
-  if data.topic:
-    join_room(data.topic)
-  else:
+  if "topic" in data:
+    join_room(data["topic"])
+  elif "group" in data and "client" in data and "sensor" in data and "unit" in data:
     join_room("sensors/%s/%s/%s/%s" %
-              (data.group, data.client, data.sensor, data.unit))
+              (data["group"], data["client"], data["sensor"], data["unit"]))
+
+
+@socketio.on('unsubscribe_sensor')
+def unsubscribe_to_mqtt(data):
+  if "topic" in data:
+    leave_room(data["topic"])
+  elif "group" in data and "client" in data and "sensor" in data and "unit" in data:
+    leave_room("sensors/%s/%s/%s/%s" %
+               (data["group"], data["client"], data["sensor"], data["unit"]))
 
 
 def signal_handler(sig, frame):
