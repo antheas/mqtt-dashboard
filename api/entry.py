@@ -19,7 +19,7 @@ app.config['MQTT_BROKER_PORT'] = 1883
 app.config['MQTT_TLS_ENABLED'] = False
 CORS(app)
 db = DatabaseManager()
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", engineio_logger=True)
 mqtt = Mqtt(app)
 
 
@@ -82,8 +82,7 @@ def on_message(client, userdata, msg):
   #         "y": msg.payload.decode('utf-8')}
   data = {"topic": topic, "x": datetime.timestamp(datetime.now()),
           "y": msg.payload.decode('utf-8')}
-  socketio.emit("sensor", data, room=topic)
-  print(str(data), flush=True)
+  socketio.emit("measure", data, room=topic)
 
 
 @socketio.on('subscribe_sensor')

@@ -65,7 +65,9 @@ services:
     ports:
       - "5000:5000"
     networks:
-      - backend
+      backend:
+        aliases: 
+          - api
     depends_on:
       - influxdb
       - broker
@@ -78,18 +80,18 @@ services:
       INFLUXDB_V2_TOKEN: "${DB_USER}:${DB_PW}"
       # INFLUXDB_V2_TIMEOUT: 10000
 
-  # nginx:
-  #   image: nginx
-  #   volumes:
-  #     - ./client/dist:/usr/share/nginx/html
-  #     - ./nginx.conf:/etc/nginx/nginx.conf
-  #   ports:
-  #     - "80:80"
-  #   links:
-  #     - "api"
-  #   networks:
-  #     - backend
-  #   container_name: web
+  nginx:
+    image: nginx
+    volumes:
+      - ./client/dist:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - backend
+    container_name: web
 
 networks:
   backend:

@@ -28,8 +28,8 @@ module.exports = {
     },
   },
   plugins: [
-    new CleanWebpackPlugin(),
     // Setup template
+    // new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "./src/index.html",

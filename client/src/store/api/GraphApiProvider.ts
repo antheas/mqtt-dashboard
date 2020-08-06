@@ -44,20 +44,25 @@ export class GraphApi extends AbstractGraphApi {
     this.sensorBindings = new Map();
 
     if (streaming) {
-      this.socket = io(this.host);
-      this.socket.on("sensor", (d: Record<string, string>) =>
-        this.handleStream(d)
-      );
+      this.socket = io({ transports: ["websocket"], autoConnect: false });
+      this.socket.on("connect", () => {
+        if (!this.socket) return;
+        console.log("Connected");
 
-      // Rebind on server restart
-      this.socket.on("reconnect", () => {
-        this.sensorBindings.forEach((data, topic) => {
-          console.log(topic);
-          this.socket?.emit("subscribe_sensor", {
-            topic,
+        this.socket.on("measure", (d: Record<string, string>) =>
+          console.log(d)
+        );
+
+        // Rebind on server restart
+        this.socket.on("reconnect", () => {
+          this.sensorBindings.forEach((data, topic) => {
+            this.socket?.emit("subscribe_sensor", {
+              topic,
+            });
           });
         });
       });
+      this.socket.connect();
     } else {
       this.interval = setInterval(this.refresh.bind(this), autoRefresh);
     }
@@ -121,14 +126,6 @@ export class GraphApi extends AbstractGraphApi {
     if (!this.streaming || !this.socket) return;
 
     graph.sensors.forEach((s, i) => {
-      this.socket?.emit("subscribe_sensor", {
-        topic: s.topic,
-        group: s.group,
-        client: s.client,
-        sensor: s.sensor,
-        unit: s.unit,
-      });
-
       const topic = s.topic
         ? s.topic
         : `sensors/${s.group}/${s.client}/${s.sensor}/${s.unit}`;
@@ -137,6 +134,15 @@ export class GraphApi extends AbstractGraphApi {
         this.sensorBindings.get(topic)?.push({ callback, graph, i });
       } else {
         this.sensorBindings.set(topic, [{ callback, graph, i }]);
+
+        // If topic doesn't exist -> not registered for updates
+        this.socket?.emit("subscribe_sensor", {
+          topic: s.topic,
+          group: s.group,
+          client: s.client,
+          sensor: s.sensor,
+          unit: s.unit,
+        });
       }
     });
   }
@@ -177,6 +183,7 @@ export class GraphApi extends AbstractGraphApi {
 
   public destroy() {
     if (this.interval) clearInterval(this.interval);
+    if (this.socket) this.socket?.disconnect();
   }
 }
 
