@@ -101,7 +101,7 @@ export interface Sensor {
 export interface Graph {
   id: string;
   name: string;
-  type: "bump" | "heatmap" | "line" | "gauge";
+  type: "bump" | "heatmap" | "line" | "gauge" | "table";
   colors?: string;
 
   min?: number;

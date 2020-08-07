@@ -2,6 +2,7 @@ import React from "react";
 import GraphApiContext from "../store/api/GraphApiProvider";
 import { Graph, GraphWidth } from "../store/types";
 import LineGraph from "./LinearGraph";
+import TableGraph from "./TableGraph";
 
 const CompositeGraph = ({
   graph: g,
@@ -25,12 +26,24 @@ const CompositeGraph = ({
       className = "graph--two-thirds";
       break;
   }
+
+  const type = g.type;
+
   if (g) {
     return (
       <div className={`graph graph--empty ${className}`}>
         <div className="graph__header">{g.name} </div>
         <GraphApiContext.Consumer>
-          {(api) => <LineGraph graph={g} api={api} width={width} />}
+          {(api) => (
+            <>
+              {type === "line" && (
+                <LineGraph graph={g} api={api} width={width} />
+              )}
+              {type === "table" && (
+                <TableGraph graph={g} api={api} width={width} />
+              )}
+            </>
+          )}
         </GraphApiContext.Consumer>
       </div>
     );

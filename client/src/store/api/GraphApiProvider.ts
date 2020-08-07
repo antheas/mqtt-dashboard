@@ -10,6 +10,7 @@ import axios from "axios";
 import io from "socket.io-client";
 
 const STREAM_THRESHOLD = 3 * 60 * 1000;
+const STREAM_BUFFER_LEFT = 1.025;
 
 export class GraphApi extends AbstractGraphApi {
   private graphs: Map<(data: GraphData) => void, Graph>;
@@ -178,7 +179,9 @@ export class GraphApi extends AbstractGraphApi {
         ? bind.graph.scale
         : "15m";
       const to = newDate;
-      const from = new Date(to.getTime() - timescaleToMs(scale));
+      const from = new Date(
+        to.getTime() - STREAM_BUFFER_LEFT * timescaleToMs(scale)
+      );
 
       bind.callback({ ...cache, series: [...cache.series], from, to });
     });
