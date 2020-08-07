@@ -64,6 +64,11 @@ const Routes: React.FunctionComponent = () => {
           </Route>
         </Switch>
       </div>
+      <div className="footer">
+        <span className="copyright">
+          Copyright @ TRP & Kapenekakis Antheas 2020
+        </span>
+      </div>
     </Router>
   );
 };
