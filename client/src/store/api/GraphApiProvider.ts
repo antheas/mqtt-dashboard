@@ -9,6 +9,9 @@ import {
 import axios from "axios";
 import io from "socket.io-client";
 
+const STREAM_THRESHOLD = 3 * 60 * 1000;
+const shouldStream = (g: Graph) => timescaleToMs(g.scale) < STREAM_THRESHOLD;
+
 export class GraphApi extends AbstractGraphApi {
   private graphs: Map<(data: GraphData) => void, Graph>;
   private cachedData: Map<(data: GraphData) => void, GraphData>;
@@ -43,6 +46,10 @@ export class GraphApi extends AbstractGraphApi {
     this.cachedData = new Map();
     this.sensorBindings = new Map();
 
+    // Setup polling
+    this.interval = setInterval(this.refresh.bind(this), autoRefresh);
+
+    // Setup Streaming
     if (streaming) {
       this.socket = io({ transports: ["websocket"], autoConnect: false });
       this.socket.on("connect", () => {
@@ -63,13 +70,16 @@ export class GraphApi extends AbstractGraphApi {
         });
       });
       this.socket.connect();
-    } else {
-      this.interval = setInterval(this.refresh.bind(this), autoRefresh);
     }
   }
 
   private refresh() {
-    this.graphs.forEach((g, c) => this.refreshGraph(g, c));
+    this.graphs.forEach((g, c) => {
+      // Only poll graphs that should not be streamed
+      if (!this.streaming || !shouldStream(g)) {
+        this.refreshGraph(g, c);
+      }
+    });
   }
 
   public refreshGraph(g: Graph, callback: (data: GraphData) => void) {
@@ -123,7 +133,7 @@ export class GraphApi extends AbstractGraphApi {
   }
 
   public streamGraph(graph: Graph, callback: (data: GraphData) => void) {
-    if (!this.streaming || !this.socket) return;
+    if (!this.streaming || !this.socket || !shouldStream(graph)) return;
 
     graph.sensors.forEach((s, i) => {
       const topic = s.topic
