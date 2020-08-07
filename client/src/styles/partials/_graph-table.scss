@@ -1,0 +1,56 @@
+.graph-table {
+  padding-top: 15px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  .table-header {
+    &__row {
+      text-align: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      border-bottom: 3px solid $color-primary-dark;
+      margin-bottom: 5px;
+
+      &__cell {
+        &--time {
+          width: 45%;
+        }
+        &--series {
+          width: 30%;
+        }
+        &--value {
+          width: 25%;
+        }
+      }
+    }
+  }
+
+  .table-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &__row {
+      display: flex;
+      text-align: center;
+      flex-direction: row;
+      justify-content: space-around;
+
+      &__cell {
+        &--time {
+          width: 40%;
+        }
+        &--series {
+          width: 35%;
+        }
+        &--value {
+          width: 25%;
+        }
+      }
+    }
+  }
+}

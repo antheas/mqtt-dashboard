@@ -51,33 +51,44 @@ const TableGraph = ({
     .map((d) => ({
       time: d.x.toISOString(),
       value: d.y.toString(),
-      series: d.id,
-    }));
+      series: d.id.toString(),
+    }))
+    .reverse();
 
   return (
     <table className="graph-table">
-      <tr className="graph-table__row graph-table__row--header">
-        {data.series.length > 1 && (
-          <th className="graph-table__header__col">Series</th>
-        )}
-        <th className="graph-table__header__col">Time</th>
-        <th className="graph-table__header__col">Value ({graph.unit})</th>
-      </tr>
-      {lines.map((line) => {
-        <tr className="graph-table__row">
+      <thead className="table-header">
+        <tr className="table-header__row table-header__row--header">
           {data.series.length > 1 && (
-            <th className="graph-table__row__col graph-table__row__col--series">
-              {line.series}
+            <th className="table-header__header__cell table-body__row__cell--series">
+              Series
             </th>
           )}
-          <th className="graph-table__row__col graph-table__row__col--time">
-            {line.time}
+          <th className="table-header__header__cell table-body__row__cell--time">
+            Time
           </th>
-          <th className="graph-table__row__col graph-table__row__col--value">
-            {line.value}
+          <th className="table-header__header__cell table-body__row__cell--value">
+            Value ({graph.unit})
           </th>
-        </tr>;
-      })}
+        </tr>
+      </thead>
+      <tbody className="table-body">
+        {lines.map((line) => (
+          <tr className="table-body__row" key={`${line.series}=${line.time}`}>
+            {data.series.length > 1 && (
+              <td className="table-body__row__cell table-body__row__cell--series">
+                {line.series}
+              </td>
+            )}
+            <td className="table-body__row__cell table-body__row__cell--time">
+              {line.time}
+            </td>
+            <td className="table-body__row__cell table-body__row__cell--value">
+              {line.value}
+            </td>
+          </tr>
+        ))}
+      </tbody>
     </table>
   );
 };
