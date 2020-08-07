@@ -18,7 +18,7 @@
 
       &__cell {
         &--time {
-          width: 45%;
+          width: 30%;
         }
         &--series {
           width: 30%;
@@ -42,10 +42,11 @@
 
       &__cell {
         &--time {
-          width: 40%;
+          width: 30%;
+          text-align: right;
         }
         &--series {
-          width: 35%;
+          width: 30%;
         }
         &--value {
           width: 25%;

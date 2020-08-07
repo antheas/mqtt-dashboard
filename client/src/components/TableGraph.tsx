@@ -49,7 +49,7 @@ const TableGraph = ({
     .sort((a, b) => a.x.getTime() - b.x.getTime())
     .slice(0, TABLE_LIMIT)
     .map((d) => ({
-      time: d.x.toISOString(),
+      time: `${d.x.getHours()}:${d.x.getMinutes()}:${d.x.getSeconds()},${d.x.getMilliseconds()} ${d.x.getDay()}/${d.x.getMonth()}`,
       value: d.y.toString(),
       series: d.id.toString(),
     }))
@@ -60,14 +60,14 @@ const TableGraph = ({
       <thead className="table-header">
         <tr className="table-header__row table-header__row--header">
           {data.series.length > 1 && (
-            <th className="table-header__header__cell table-body__row__cell--series">
+            <th className="table-header__header__cell table-header__row__cell--series">
               Series
             </th>
           )}
-          <th className="table-header__header__cell table-body__row__cell--time">
+          <th className="table-header__header__cell table-header__row__cell--time">
             Time
           </th>
-          <th className="table-header__header__cell table-body__row__cell--value">
+          <th className="table-header__header__cell table-header__row__cell--value">
             Value ({graph.unit})
           </th>
         </tr>
