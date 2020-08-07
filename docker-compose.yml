@@ -91,7 +91,6 @@ services:
       - api
     networks:
       - backend
-    container_name: web
 
 networks:
   backend:

@@ -32,5 +32,6 @@ Werkzeug==1.0.1
 wrapt==1.12.1
 flask-cors==3.0.8
 Flask-SocketIO==4.3.1
-eventlet==0.26.1
 Flask-MQTT==1.1.1
+gevent==20.6.2
+gevent-websocket==0.10.1

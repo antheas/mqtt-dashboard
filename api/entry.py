@@ -3,23 +3,38 @@ import signal
 from datetime import datetime
 
 from flask import Flask, request
-
-from db import DatabaseManager
-from flask_cors import CORS
+# from flask_cors import CORS
 from flask_mqtt import Mqtt
 from flask_socketio import SocketIO, emit, join_room, leave_room
+
+from db import DatabaseManager
+from gevent import monkey
+
+monkey.patch_all()
 
 TIME_TAGS = ["start", "stop"]
 TAGS = ["topic", "group", "client", "sensor", "unit"]
 
-
 app = Flask(__name__)
+app.config['SECRET'] = 'my secret key'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['MQTT_BROKER_URL'] = os.environ.get("BROKER_URL") or "broker"
 app.config['MQTT_BROKER_PORT'] = 1883
+app.config['MQTT_USERNAME'] = ''
+app.config['MQTT_PASSWORD'] = ''
+app.config['MQTT_KEEPALIVE'] = 5
 app.config['MQTT_TLS_ENABLED'] = False
-CORS(app)
+app.config['MQTT_CLEAN_SESSION'] = True
+
+# Parameters for SSL enabled
+# app.config['MQTT_BROKER_PORT'] = 8883
+# app.config['MQTT_TLS_ENABLED'] = True
+# app.config['MQTT_TLS_INSECURE'] = True
+# app.config['MQTT_TLS_CA_CERTS'] = 'ca.crt'
+
+# CORS(app)
 db = DatabaseManager()
-socketio = SocketIO(app, cors_allowed_origins="*", engineio_logger=True)
+socketio = SocketIO(app)
 mqtt = Mqtt(app)
 
 
@@ -69,7 +84,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 @mqtt.on_message()
-def on_message(client, userdata, msg):
+def handle_mqtt_message(client, userdata, msg):
   topic = msg.topic
   # sensorInfo = topic.split("/")
   # group = sensorInfo[1]
@@ -111,4 +126,4 @@ def signal_handler(sig, frame):
 if __name__ == '__main__':
   print("Starting...", flush=True)
   # signal.signal(signal.SIGINT, signal_handler)
-  socketio.run(app, host='0.0.0.0')
+  socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=False)

@@ -50,7 +50,7 @@ export class GraphApi extends AbstractGraphApi {
         console.log("Connected");
 
         this.socket.on("measure", (d: Record<string, string>) =>
-          console.log(d)
+          this.handleStream(d)
         );
 
         // Rebind on server restart
