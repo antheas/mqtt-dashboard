@@ -10,7 +10,6 @@ import axios from "axios";
 import io from "socket.io-client";
 
 const STREAM_THRESHOLD = 3 * 60 * 1000;
-const shouldStream = (g: Graph) => timescaleToMs(g.scale) < STREAM_THRESHOLD;
 
 export class GraphApi extends AbstractGraphApi {
   private graphs: Map<(data: GraphData) => void, Graph>;
@@ -76,7 +75,7 @@ export class GraphApi extends AbstractGraphApi {
   private refresh() {
     this.graphs.forEach((g, c) => {
       // Only poll graphs that should not be streamed
-      if (!this.streaming || !shouldStream(g)) {
+      if (!this.streaming || !this.shouldStream(g)) {
         this.refreshGraph(g, c);
       }
     });
@@ -133,7 +132,7 @@ export class GraphApi extends AbstractGraphApi {
   }
 
   public streamGraph(graph: Graph, callback: (data: GraphData) => void) {
-    if (!this.streaming || !this.socket || !shouldStream(graph)) return;
+    if (!this.streaming || !this.socket || !this.shouldStream(graph)) return;
 
     graph.sensors.forEach((s, i) => {
       const topic = s.topic
@@ -165,17 +164,20 @@ export class GraphApi extends AbstractGraphApi {
       const cache = this.cachedData.get(bind.callback);
       if (!cache) return;
 
+      // Add new point to tail, remove from beginning
+      const newDate = new Date(Math.floor(parseInt(socketData.x) * 1000));
       cache.series[bind.i].data.push({
-        x: new Date(Math.floor(parseInt(socketData.x) * 1000)),
+        x: newDate,
         y: socketData.y,
       });
+      cache.series[bind.i].data.shift();
 
       const scale = this.scale
         ? this.scale
         : bind.graph.scale
         ? bind.graph.scale
         : "15m";
-      const to = this.to ? this.to : new Date();
+      const to = newDate;
       const from = new Date(to.getTime() - timescaleToMs(scale));
 
       bind.callback({ ...cache, series: [...cache.series], from, to });
@@ -195,6 +197,10 @@ export class GraphApi extends AbstractGraphApi {
     if (this.interval) clearInterval(this.interval);
     if (this.socket) this.socket?.disconnect();
   }
+
+  private shouldStream = (g: Graph) =>
+    timescaleToMs(g.scale) < STREAM_THRESHOLD ||
+    (this.scale ? timescaleToMs(this.scale) < STREAM_THRESHOLD : false);
 }
 
 export class StubGraphApi extends AbstractGraphApi {
