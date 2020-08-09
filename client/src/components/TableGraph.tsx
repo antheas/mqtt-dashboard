@@ -37,12 +37,14 @@ const TableGraph = ({
     time: string;
     value: string;
     series: string;
+    key: string;
   }[] = data.series
     .map((s) =>
       s.data.map((d) => ({
         id: s.id,
         x: d.x as Date,
         y: d.y as number,
+        key: d.key,
       }))
     )
     .reduce((a, b) => a.concat(b), [])
@@ -52,6 +54,7 @@ const TableGraph = ({
       time: `${d.x.getHours()}:${d.x.getMinutes()}:${d.x.getSeconds()},${d.x.getMilliseconds()} ${d.x.getDay()}/${d.x.getMonth()}`,
       value: d.y.toString(),
       series: d.id.toString(),
+      key: d.key,
     }))
     .reverse();
 
@@ -74,7 +77,8 @@ const TableGraph = ({
       </thead>
       <tbody className="table-body">
         {lines.map((line) => (
-          <tr className="table-body__row" key={`${line.series}=${line.time}`}>
+          // Fixme: key calculation
+          <tr className="table-body__row" key={line.key}>
             {data.series.length > 1 && (
               <td className="table-body__row__cell table-body__row__cell--series">
                 {line.series}

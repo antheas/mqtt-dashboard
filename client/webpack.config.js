@@ -29,7 +29,7 @@ module.exports = {
   },
   plugins: [
     // Setup template
-    // new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({ exclude: ["index.html"] }),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "./src/index.html",

@@ -123,6 +123,7 @@ export class GraphApi extends AbstractGraphApi {
               ? res.data.records.map((r: { x: number; y: number }) => ({
                   x: new Date(r.x),
                   y: r.y,
+                  key: r.x,
                 }))
               : [],
           };
@@ -167,21 +168,25 @@ export class GraphApi extends AbstractGraphApi {
 
       // Add new point to tail, remove from beginning
       const newDate = new Date(Math.floor(parseInt(socketData.x) * 1000));
-      cache.series[bind.i].data.push({
+      const data = cache.series[bind.i].data;
+      const id = cache.series[bind.i].id;
+      data.push({
         x: newDate,
         y: socketData.y,
+        key: `${id}-${newDate.toString()}-${new Date().getTime()}`,
       });
-      cache.series[bind.i].data.shift();
 
+      // Calculate new time
       const scale = this.scale
         ? this.scale
         : bind.graph.scale
         ? bind.graph.scale
         : "15m";
       const to = newDate;
-      const from = new Date(
-        to.getTime() - STREAM_BUFFER_LEFT * timescaleToMs(scale)
-      );
+      const from = new Date(to.getTime() - timescaleToMs(scale));
+
+      // Remove stale points
+      while (data.length && (data[0].x as Date) < from) data.shift();
 
       bind.callback({ ...cache, series: [...cache.series], from, to });
     });

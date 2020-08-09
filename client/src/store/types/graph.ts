@@ -56,6 +56,7 @@ export type DatumValue = string | number | Date;
 export interface Datum {
   x?: DatumValue | null;
   y?: DatumValue | null;
+  key: string; // Some times duplicate entries might be created, so this key makes the Datum unique
   [key: string]: any;
 }
 
