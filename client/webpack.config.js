@@ -38,14 +38,14 @@ module.exports = {
       minify: true,
     }),
     new Dotenv(),
-    // new FaviconsWebpackPlugin({
-    //   logo: "./src/favicon.png",
-    //   favicons: {
-    //     icons: {
-    //       appleStartup: false,
-    //     },
-    //   },
-    // }),
+    new FaviconsWebpackPlugin({
+      logo: "./src/favicon.png",
+      favicons: {
+        icons: {
+          appleStartup: false,
+        },
+      },
+    }),
     new MiniCssExtractPlugin({
       filename: "[name].css",
       chunkFilename: "[id].css",
