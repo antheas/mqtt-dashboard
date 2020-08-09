@@ -8,7 +8,11 @@ storage etc.
 However, if you so desire, with minimal modifications you could create your own custom dashboard
 and display your own sensor data (even though the builder hasn't been created).
 
+## Dashboard
 ![Dashboard Example](dashboard.png)
+
+## Streaming (4Hz sensors)
+![Streaming Example](streaming.gif)
 
 # Description
 In the heart of this project lies the Eclipse Mosquitto broker.
