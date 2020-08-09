@@ -1,7 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+// const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const FaviconsWebpackPlugin = require("favicons-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
@@ -29,7 +29,8 @@ module.exports = {
   },
   plugins: [
     // Setup template
-    new CleanWebpackPlugin({ exclude: ["index.html"] }),
+    // FIXME: Clean webpack plugin deletes index.html, maybe replace
+    // new CleanWebpackPlugin({ exclude: ["index.html"] }),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: "./src/index.html",

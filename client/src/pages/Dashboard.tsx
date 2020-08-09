@@ -69,7 +69,8 @@ const Dashboard: React.FunctionComponent<IProps> = ({ dashboard }) => {
   useEffect(() => {
     if (!dashboard) return;
 
-    const api = new GraphApi("http://sensors.lan/api", 20000, true);
+    // FIXME: Hardcoded values
+    const api = new GraphApi(20000, true);
     setApi(api);
 
     return () => {

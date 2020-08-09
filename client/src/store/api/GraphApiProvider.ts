@@ -10,7 +10,6 @@ import axios from "axios";
 import io from "socket.io-client";
 
 const STREAM_THRESHOLD = 3 * 60 * 1000;
-const STREAM_BUFFER_LEFT = 1.025;
 
 export class GraphApi extends AbstractGraphApi {
   private graphs: Map<(data: GraphData) => void, Graph>;
@@ -20,7 +19,7 @@ export class GraphApi extends AbstractGraphApi {
     { callback: (data: GraphData) => void; graph: Graph; i: number }[]
   >;
 
-  private host: string;
+  private hostUrl: string;
   private streaming: boolean;
   private to?: Date;
   private scale?: TimescaleType;
@@ -29,15 +28,16 @@ export class GraphApi extends AbstractGraphApi {
   private socket: SocketIOClient.Socket | undefined;
 
   constructor(
-    host: string,
     autoRefresh: number,
     streaming: boolean,
     to?: Date,
-    scale?: TimescaleType
+    scale?: TimescaleType,
+    hostUrl?: string,
+    socketUrl?: string
   ) {
     super();
 
-    this.host = host;
+    this.hostUrl = hostUrl ? hostUrl : (process.env.API_URL as string);
     this.streaming = streaming;
     this.to = to;
     this.scale = scale;
@@ -51,7 +51,13 @@ export class GraphApi extends AbstractGraphApi {
 
     // Setup Streaming
     if (streaming) {
-      this.socket = io({ transports: ["websocket"], autoConnect: false });
+      this.socket = io(
+        socketUrl ? socketUrl : (process.env.SOCKET_URL as string),
+        {
+          transports: ["websocket"],
+          autoConnect: false,
+        }
+      );
       this.socket.on("connect", () => {
         if (!this.socket) return;
         console.log("Connected");
@@ -105,7 +111,7 @@ export class GraphApi extends AbstractGraphApi {
     // Make get request for each sensor
     g.sensors.forEach((s, i) => {
       axios
-        .get(`${this.host}/query`, {
+        .get(`${this.hostUrl}/query`, {
           params: {
             group: s.group,
             client: s.client,

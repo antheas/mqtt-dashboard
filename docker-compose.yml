@@ -92,6 +92,17 @@ services:
     networks:
       - backend
 
+  client-builder:
+    image: node:12
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./client/:/home/node/app
+    networks:
+      - backend
+    command: bash -c "npm i; npm run build; npm run watch"
+
 networks:
   backend:
 volumes:
